@@ -1,0 +1,22 @@
+:host {
+    display: block;
+    width: 100%;
+    background: #ffffff;
+    color: #111827;
+    font-family:
+        "Salesforce Sans",
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+.page{
+    width:100%;
+    min-height:100vh;
+    background:#ffffff;
+}
+
+main{
+    display:flex;
+    flex-direction:column;
+}
