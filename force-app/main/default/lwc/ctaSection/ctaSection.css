@@ -1,0 +1,49 @@
+.cta{
+
+    background:#111827;
+
+    color:white;
+
+    padding:90px 24px;
+
+}
+
+.container{
+
+    max-width:900px;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+h2{
+
+    font-size:42px;
+
+    margin-bottom:20px;
+
+}
+
+p{
+
+    font-size:18px;
+
+    color:#D1D5DB;
+
+    margin-bottom:36px;
+
+}
+
+.buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+}

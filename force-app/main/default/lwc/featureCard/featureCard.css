@@ -1,0 +1,51 @@
+:host{
+    display:block;
+}
+
+.card{
+
+    background:#ffffff;
+
+    border:1px solid #E5E7EB;
+
+    border-radius:16px;
+
+    padding:32px;
+
+    transition:.25s;
+
+    height:100%;
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+}
+
+.icon{
+
+    font-size:34px;
+
+    margin-bottom:20px;
+}
+
+h3{
+
+    font-size:22px;
+
+    font-weight:600;
+
+    margin-bottom:16px;
+
+}
+
+p{
+
+    color:#6B7280;
+
+    line-height:1.7;
+
+}

@@ -1,3 +1,43 @@
 <template>
-    
+
+<section id="howSection" class="section">
+
+    <div class="container">
+
+        <div class="heading">
+
+            <h2>How It Works</h2>
+
+            <p>
+                Four simple steps to become a trusted member of the ApeX community.
+            </p>
+
+        </div>
+
+        <div class="grid">
+
+            <template
+                for:each={steps}
+                for:item="step">
+
+                <c-step-card
+
+                    key={step.id}
+
+                    number={step.number}
+
+                    title={step.title}
+
+                    description={step.description}>
+
+                </c-step-card>
+
+            </template>
+
+        </div>
+
+    </div>
+
+</section>
+
 </template>

@@ -1,3 +1,43 @@
 <template>
-    
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="heading">
+
+            <h2>Why ApeX Exists</h2>
+
+            <p>
+                Building safer, fairer and stronger riding communities.
+            </p>
+
+        </div>
+
+        <div class="grid">
+
+            <template
+                for:each={features}
+                for:item="feature">
+
+                <c-feature-card
+
+                    key={feature.id}
+
+                    icon={feature.icon}
+
+                    title={feature.title}
+
+                    description={feature.description}>
+
+                </c-feature-card>
+
+            </template>
+
+        </div>
+
+    </div>
+
+</section>
+
 </template>

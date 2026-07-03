@@ -1,0 +1,70 @@
+:host{
+    display:block;
+}
+
+.card{
+
+    background:#ffffff;
+
+    border-radius:16px;
+
+    border:1px solid #E5E7EB;
+
+    padding:32px;
+
+    text-align:center;
+
+    transition:.25s;
+
+    height:100%;
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 14px 30px rgba(0,0,0,.08);
+
+}
+
+.stepNumber{
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:50%;
+
+    background:#111827;
+
+    color:#ffffff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin:0 auto 24px;
+
+}
+
+h3{
+
+    margin-bottom:14px;
+
+    font-size:22px;
+
+}
+
+p{
+
+    color:#6B7280;
+
+    line-height:1.7;
+
+}
