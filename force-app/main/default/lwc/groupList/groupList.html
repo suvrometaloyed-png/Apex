@@ -1,0 +1,29 @@
+<template>
+
+<lightning-spinner
+    if:true={loading}>
+</lightning-spinner>
+
+<div class="grid">
+
+    <template
+        for:each={groups}
+        for:item="group">
+
+        <c-group-card
+
+            key={group.id}
+
+            group={group}
+
+            onjoin={forwardJoin}
+
+            onviewmembers={forwardMembers}>
+
+        </c-group-card>
+
+    </template>
+
+</div>
+
+</template>

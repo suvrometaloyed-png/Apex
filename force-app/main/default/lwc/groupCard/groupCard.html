@@ -1,0 +1,57 @@
+<template>
+
+    <lightning-card>
+
+        <div class="card">
+
+            <div>
+
+                <h2>{group.name}</h2>
+
+                <p>{joinPolicy}</p>
+
+            </div>
+
+            <div class="actions">
+
+                <lightning-button
+                    label="View Members"
+                    onclick={handleViewMembers}
+                    variant="base">
+                </lightning-button>
+
+                <template lwc:if={showJoinButton}>
+
+                    <lightning-button
+                        label="Join"
+                        variant="brand"
+                        onclick={handleJoin}>
+                    </lightning-button>
+
+                </template>
+
+                <template lwc:else>
+
+                    <span class="status">
+                        {statusLabel}
+                    </span>
+
+                </template>
+
+                <template lwc:if={showManageButton}>
+
+                    <lightning-button
+                        label="Manage"
+                        variant="neutral"
+                        onclick={handleManage}>
+                    </lightning-button>
+
+                </template>
+
+            </div>
+
+        </div>
+
+    </lightning-card>
+
+</template>

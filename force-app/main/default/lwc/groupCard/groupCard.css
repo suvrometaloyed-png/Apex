@@ -1,0 +1,29 @@
+.card{
+
+    padding:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.actions{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+}
+
+.status{
+
+    font-size:14px;
+
+    color:#6B7280;
+
+}

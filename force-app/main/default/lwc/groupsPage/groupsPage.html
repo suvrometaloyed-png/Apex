@@ -1,0 +1,27 @@
+<template>
+
+    <c-dashboard-header></c-dashboard-header>
+
+    <div class="page">
+
+        <h1>Groups</h1>
+
+        <c-group-list
+            groups={groups}
+            loading={loading}
+            onjoin={handleJoin}
+            onviewmembers={handleViewMembers}>
+        </c-group-list>
+
+    </div>
+
+    <c-group-members-modal
+        is-open={showMembers}
+        members={members}
+        group-name={selectedGroupName}
+        onapprove={handleApprove}
+        onreject={handleReject}
+        onclose={closeModal}>
+    </c-group-members-modal>
+
+</template>

@@ -1,0 +1,75 @@
+:host{
+    display:block;
+}
+
+.header{
+
+    height:64px;
+
+    border-bottom:1px solid #E5E7EB;
+
+    background:#FFFFFF;
+
+}
+
+.container{
+
+    max-width:1152px;
+
+    height:100%;
+
+    margin:auto;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 24px;
+
+}
+
+.left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:40px;
+
+}
+
+.logo{
+
+    font-size:20px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+nav{
+
+    display:flex;
+
+    gap:24px;
+
+}
+
+nav a{
+
+    color:#6B7280;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+}
+
+nav a:hover{
+
+    color:#111827;
+
+}

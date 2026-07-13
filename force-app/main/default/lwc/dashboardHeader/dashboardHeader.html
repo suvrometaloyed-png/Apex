@@ -1,0 +1,41 @@
+<template>
+
+<header class="header">
+
+    <div class="container">
+
+        <div class="left">
+
+            <a class="logo" onclick={goDashboard}>
+                APEX
+            </a>
+
+            <nav>
+
+                <a onclick={goRides}>
+                    Rides
+                </a>
+
+                <a onclick={goGroups}>
+                    Groups
+                </a>
+
+                <a onclick={goProfile}>
+                    Profile
+                </a>
+
+            </nav>
+
+        </div>
+
+        <lightning-button
+            variant="neutral"
+            label="Logout"
+            onclick={logout}>
+        </lightning-button>
+
+    </div>
+
+</header>
+
+</template>

@@ -1,0 +1,79 @@
+<template>
+
+    <template lwc:if={isOpen}>
+
+        <section
+            role="dialog"
+            tabindex="-1"
+            class="slds-modal slds-fade-in-open">
+
+            <div class="slds-modal__container">
+
+                <header class="slds-modal__header">
+
+                    <h2 class="slds-text-heading_medium">
+
+                        {groupName}
+
+                    </h2>
+
+                </header>
+
+                <div class="slds-modal__content">
+
+                    <template
+                        for:each={members}
+                        for:item="member">
+
+                        <div
+                            key={member.id}
+                            class="member">
+
+                            <lightning-avatar
+                                fallback-icon-name="standard:user"
+                                size="small">
+                            </lightning-avatar>
+
+                            <div>
+
+                                <strong>
+
+                                    {member.name}
+
+                                </strong>
+
+                                <div>
+
+                                    {member.role}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </template>
+
+                </div>
+
+                <footer class="slds-modal__footer">
+
+                    <lightning-button
+
+                        label="Close"
+
+                        onclick={closeModal}>
+
+                    </lightning-button>
+
+                </footer>
+
+            </div>
+
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+    </template>
+
+</template>
