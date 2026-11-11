@@ -12,3 +12,5 @@ package.xml
 **/__tests__/**
 
 node_modules/
+**/tsconfig.json
+**/*.ts

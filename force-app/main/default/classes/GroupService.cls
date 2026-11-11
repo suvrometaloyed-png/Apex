@@ -1,264 +1,339 @@
 public with sharing class GroupService {
 
-    /*public static List<GroupWrapper> getGroups() {
-
-        List<Group__c> groups =
-            GroupSelector.getAllGroups();
-
-        List<GroupWrapper> wrappers =
-            new List<GroupWrapper>();
-
-        for(Group__c g : groups){
-
-            GroupWrapper w = new GroupWrapper();
-
-            w.id = g.Id;
-            w.name = g.Name;
-            //w.description = g.Description__c;
-            w.joinPolicy = g.Joining_Policy__c;
-
-            wrappers.add(w);
-
-        }
-
-        return wrappers;
-
-    }
-    public static void joinGroup(Id groupId){
+    /**
+     * Get all active groups for the current Experience Cloud user.
+     */
+    public static List<GroupWrapper> getGroups() {
 
         Id contactId = UserContextService.getContactId();
 
-        // Already joined?
-        // throw exception
+        List<Group__c> groups = GroupSelector.getActiveGroups();
 
-        Group__c group =
+        if (groups.isEmpty()) {
+            return new List<GroupWrapper>();
+        }
+
+        Set<Id> groupIds = new Set<Id>();
+
+        for (Group__c groupRecord : groups) {
+            groupIds.add(groupRecord.Id);
+        }
+
+        /*
+         * Bulk queries:
+         *
+         * 1. Member counts for all groups
+         * 2. Current user's memberships for all groups
+         */
+        Map<Id, Integer> memberCounts =
+            GroupSelector.getMemberCounts(groupIds);
+
+        Map<Id, Group_Membership__c> memberships =
+            GroupSelector.getMembershipsByGroups(
+                groupIds,
+                contactId
+            );
+
+        List<GroupWrapper> results =
+            new List<GroupWrapper>();
+
+        for (Group__c groupRecord : groups) {
+
+            GroupWrapper wrapper =
+                buildGroupWrapper(
+                    groupRecord,
+                    memberCounts,
+                    memberships
+                );
+
+            results.add(wrapper);
+        }
+
+        return results;
+    }
+
+    /*
+    /**
+     * Get details for one group.
+     */
+    public static GroupWrapper getGroupDetails(Id groupId) {
+
+        validateGroupId(groupId);
+
+        Group__c groupRecord =
             GroupSelector.getGroup(groupId);
 
+        if (groupRecord == null) {
+            throw new AuraHandledException(
+                'The selected group could not be found.'
+            );
+        }
+
+        Id contactId =
+            UserContextService.getContactId();
+
+        Set<Id> groupIds =
+            new Set<Id>{ groupId };
+
+        Map<Id, Integer> memberCounts =
+            GroupSelector.getMemberCounts(groupIds);
+
+        Map<Id, Group_Membership__c> memberships =
+            GroupSelector.getMembershipsByGroups(
+                groupIds,
+                contactId
+            );
+
+        return buildGroupWrapper(
+            groupRecord,
+            memberCounts,
+            memberships
+        );
+    }
+    
+
+    /**
+     * Request membership in a group.
+     *
+     * IMPORTANT:
+     * The ContactId is never supplied by the LWC.
+     * It is always derived from the logged-in User.
+     */
+    public static void joinGroup(Id groupId) {
+
+        validateGroupId(groupId);
+
+        Group__c groupRecord =
+            GroupSelector.getGroup(groupId);
+
+        if (groupRecord == null) {
+            throw new AuraHandledException(
+                'This group is no longer available.'
+            );
+        }
+
+        Id contactId =
+            UserContextService.getContactId();
+
+        /*
+         * Check for an existing membership.
+         */
+        Group_Membership__c existingMembership =
+            GroupSelector.getMembership(
+                groupId,
+                contactId
+            );
+
+        if (existingMembership != null) {
+
+            if (
+                existingMembership.Status__c ==
+                MembershipConstants.ACTIVE
+            ) {
+                throw new AuraHandledException(
+                    'You are already a member of this group.'
+                );
+            }
+
+            if (
+                existingMembership.Status__c ==
+                MembershipConstants.ON_HOLD
+            ) {
+                throw new AuraHandledException(
+                    'Your membership for this group is currently on hold.'
+                );
+            }
+        }
+
+        /*
+         * Create the membership/request record.
+         *
+         * The exact request-state field should match
+         * your existing metadata.
+         */
         Group_Membership__c membership =
             new Group_Membership__c();
 
         membership.Group__c = groupId;
-        membership.contactId = contactId;
+        membership.Contact__c = contactId;
 
-        if(group.Join_Policy__c == 'OPEN'){
+        membership.Status__c =
+            MembershipConstants.REQUEST_PENDING;
 
-            membership.Status__c = MembershipConstants.ACTIVE;
-
-        }else{
-
-            membership.Status__c = MembershipConstants.PENDING;
-
-        }
+        membership.Joining_Date__c =
+            System.today();
 
         insert membership;
-
     }
-    public static void resolveMembership(
-        Id membershipId,
-        String action
-    ){
 
-        Group_Membership__c membership = [
+    /*
+    /**
+     * Returns whether the current Contact is an
+     * active member of the group.
+     */
+    public static Boolean isCurrentUserMember(
+        Id groupId
+    ) {
 
-            SELECT
-                Id,
-                Status__c
+        validateGroupId(groupId);
 
-            FROM Group_Membership__c
+        Id contactId =
+            UserContextService.getContactId();
 
-            WHERE Id=:membershipId
+        Group_Membership__c membership =
+            GroupSelector.getMembership(
+                groupId,
+                contactId
+            );
 
-        ];
+        return membership != null &&
+            membership.Status__c ==
+            MembershipConstants.ACTIVE;
+    }
 
-        if(action == 'APPROVE'){
+    /**
+     * Returns active members for a group.
+     */
+    public static List<GroupMemberWrapper> getGroupMembers(Id groupId) {
 
-            membership.Status__c = 'ACTIVE';
+        validateGroupId(groupId);
 
+        Group__c groupRecord =
+            GroupSelector.getGroup(groupId);
+
+        if (groupRecord == null) {
+            throw new AuraHandledException(
+                'The selected group could not be found.'
+            );
         }
 
-        else if(action == 'REJECT'){
+        List<Group_Membership__c> memberships =
+            GroupSelector.getGroupMembers(groupId);
 
-            membership.Status__c = 'REJECTED';
+        List<GroupMemberWrapper> results =
+            new List<GroupMemberWrapper>();
 
-        }
-
-        update membership;
-
-    }*/
-
-        /*
-        * Returns all active groups with membership information
-        */
-        public static List<GroupWrapper> getGroups() {
-
-            Id contactId = UserContextService.getContactId();
-
-            List<Group__c> groups = GroupSelector.getAllGroups();
-
-            List<GroupWrapper> wrappers = new List<GroupWrapper>();
-
-            for (Group__c groupRec : groups) {
-
-                GroupWrapper wrapper = new GroupWrapper();
-
-                wrapper.id = groupRec.Id;
-                wrapper.name = groupRec.Name;
-                //wrapper.description = groupRec.Description__c;
-                wrapper.joinPolicy = groupRec.Joining_Policy__c;
-                //wrapper.bannerImage = groupRec.Banner_Image__c;
-                //wrapper.logo = groupRec.Logo__c;
-
-                wrapper.memberCount =
-                    GroupSelector.getMemberCount(groupRec.Id);
-
-                Group_Membership__c membership =
-                    GroupSelector.getMembership(
-                        groupRec.Id,
-                        contactId
-                    );
-
-                if (membership == null) {
-
-                    wrapper.membershipStatus = 'NONE';
-
-                } else {
-
-                    wrapper.membershipStatus =
-                        membership.Status__c;
-
-                }
-
-                wrappers.add(wrapper);
-
-            }
-
-            return wrappers;
-
-        }
-
-        /*
-        * Returns one group
-        */
-        public static GroupWrapper getGroupDetails(Id groupId) {
-
-            Group__c groupRec =
-                GroupSelector.getGroup(groupId);
-
-            GroupWrapper wrapper = new GroupWrapper();
-
-            wrapper.id = groupRec.Id;
-            wrapper.name = groupRec.Name;
-            //wrapper.description = groupRec.Description__c;
-            wrapper.joinPolicy = groupRec.Joining_Policy__c;
-            //wrapper.bannerImage = groupRec.Banner_Image__c;
-            //wrapper.logo = groupRec.Logo__c;
-
-            wrapper.memberCount =
-                GroupSelector.getMemberCount(groupId);
-
-            return wrapper;
-
-        }
-
-        /*
-        * Creates a join request
-        */
-        public static void joinGroup(Id groupId) {
-
-            Id contactId =
-                UserContextService.getContactId();
-
-            if (GroupSelector.membershipExists(
-                    groupId,
-                    contactId)) {
-
-                throw new AuraHandledException(
-                    'You have already requested to join this group.'
-                );
-
-            }
-
-            Group_Membership__c membership =
-                new Group_Membership__c();
-
-            membership.Group__c = groupId;
-            membership.Contact__c = contactId;
-
-            membership.Status__c =
-                MembershipConstants.PENDING;
-
-            //membership.Requested_Date__c =
-                System.now();
-
-            insert membership;
-
-        }
-
-        /*
-        * Returns all members
-        */
-        public static List<GroupMemberWrapper> getGroupMembers(
-            Id groupId
+        for (
+            Group_Membership__c membership :
+            memberships
         ) {
 
-            List<GroupMemberWrapper> wrappers =
-                new List<GroupMemberWrapper>();
+            GroupMemberWrapper wrapper =
+                new GroupMemberWrapper();
 
-            List<Group_Membership__c> members =
-                GroupSelector.getMembershipsByGroup(groupId);
+            wrapper.membershipId =
+                membership.Id;
 
-            for (Group_Membership__c gm : members) {
+            wrapper.contactId =
+                membership.Contact__c;
 
-                GroupMemberWrapper wrapper =
-                    new GroupMemberWrapper();
+            wrapper.name =
+                membership.Contact__r.Name;
 
-                wrapper.membershipId = gm.Id;
-                wrapper.contactId = gm.Contact__c;
-                wrapper.name = gm.Contact__r.Name;
-                wrapper.email = gm.Contact__r.Email;
-                wrapper.status = gm.Status__c;
-                wrapper.isPending =
-                    gm.Status__c == MembershipConstants.PENDING;
+            wrapper.email =
+                membership.Contact__r.Email;
 
-                wrappers.add(wrapper);
+            wrapper.status =
+                membership.Status__c;
 
-            }
+            wrapper.isPending = false;
 
-            return wrappers;
-
+            results.add(wrapper);
         }
 
+        return results;
+    }
+
+    /**
+     * Get member count for one group.
+     */
+    public static Integer getMemberCount(
+        Id groupId
+    ) {
+
+        validateGroupId(groupId);
+
+        Map<Id, Integer> counts =
+            GroupSelector.getMemberCounts(
+                new Set<Id>{ groupId }
+            );
+
+        return counts.containsKey(groupId)
+            ? counts.get(groupId)
+            : 0;
+    }
+    
+
+    // =========================================================
+    // PRIVATE METHODS
+    // =========================================================
+
+    private static GroupWrapper buildGroupWrapper(
+        Group__c groupRecord,
+        Map<Id, Integer> memberCounts,
+        Map<Id, Group_Membership__c> memberships
+    ) {
+
+        GroupWrapper wrapper =
+            new GroupWrapper();
+
+        wrapper.id =
+            groupRecord.Id;
+
+        wrapper.name =
+            groupRecord.Name;
+
+        /*wrapper.description =
+            groupRecord.Description__c;
+
+        wrapper.joinPolicy =
+            groupRecord.Joining_Policy__c;
+
+        /*wrapper.bannerImage =
+            groupRecord.Banner_Image__c;
+
+        wrapper.logo =
+            groupRecord.Logo__c;
+        wrapper.city =
+            groupRecord.City__c;
+
+        wrapper.state =
+            groupRecord.State__c;
+
+        wrapper.country =
+            groupRecord.Country__c;*/
+
+        wrapper.memberCount =
+            memberCounts.containsKey(groupRecord.Id)
+                ? memberCounts.get(groupRecord.Id)
+                : 0;
+
         /*
-        * Checks if current user is an approved member
-        */
-        public static Boolean isCurrentUserMember(
-            Id groupId
-        ) {
+         * NONE is a UI-derived state.
+         * It is not stored in Salesforce.
+         */
+        if (memberships.containsKey(groupRecord.Id)) {
 
-            Id contactId =
-                UserContextService.getContactId();
+            wrapper.membershipStatus =
+                memberships.get(groupRecord.Id).Status__c;
 
-            Group_Membership__c membership =
-                GroupSelector.getMembership(
-                    groupId,
-                    contactId
-                );
+        } else {
 
-            return membership != null &&
-                membership.Status__c ==
-                MembershipConstants.APPROVED;
-
+            wrapper.membershipStatus =
+                'NONE';
         }
 
-        /*
-        * Returns active member count
-        */
-        public static Integer getMemberCount(
-            Id groupId
-        ) {
+        return wrapper;
+    }
 
-            return GroupSelector.getMemberCount(groupId);
+    private static void validateGroupId(
+        Id groupId
+    ) {
 
-        }    
-
+        if (groupId == null) {
+            throw new AuraHandledException(
+                'A group must be selected.'
+            );
+        }
+    }
 }

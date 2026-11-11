@@ -1,57 +1,164 @@
 <template>
+    <article class="group-card">
 
-    <lightning-card>
+        <!-- Group Image -->
+        <div class="group-image-container">
+            <template if:true={group.bannerImage}>
+                <img
+                    src={group.bannerImage}
+                    alt={group.name}
+                    class="group-banner"
+                />
+            </template>
 
-        <div class="card">
+            <template if:false={group.bannerImage}>
+                <div class="group-banner group-banner-placeholder">
+                    <lightning-icon
+                        icon-name="utility:groups"
+                        size="medium"
+                        alternative-text="Group">
+                    </lightning-icon>
+                </div>
+            </template>
 
-            <div>
+            <!-- Logo -->
+            <template if:true={group.logo}>
+                <img
+                    src={group.logo}
+                    alt={group.name}
+                    class="group-logo"
+                />
+            </template>
+        </div>
 
-                <h2>{group.name}</h2>
 
-                <p>{joinPolicy}</p>
+        <!-- Content -->
+        <div class="group-content">
+
+            <h2 class="group-name">
+                {group.name}
+            </h2>
+
+            <template if:true={group.description}>
+                <p class="group-description">
+                    {group.description}
+                </p>
+            </template>
+
+
+            <!-- Location >
+            <template if:true={location}>
+                <div class="group-location">
+
+                    <lightning-icon
+                        icon-name="utility:location"
+                        size="x-small"
+                        alternative-text="Location">
+                    </lightning-icon>
+
+                    <span>{location}</span>
+
+                </div>
+            </template-->
+
+
+            <!-- Member Count -->
+            <div class="group-members">
+
+                <lightning-icon
+                    icon-name="utility:groups"
+                    size="x-small"
+                    alternative-text="Members">
+                </lightning-icon>
+
+                <span>
+                    {group.memberCount} Members
+                </span>
 
             </div>
 
-            <div class="actions">
 
-                <lightning-button
-                    label="View Members"
-                    onclick={handleViewMembers}
-                    variant="base">
-                </lightning-button>
+            <!-- Membership Status -->
+            <div class="membership-status">
 
-                <template lwc:if={showJoinButton}>
-
-                    <lightning-button
-                        label="Join"
-                        variant="brand"
-                        onclick={handleJoin}>
-                    </lightning-button>
-
-                </template>
-
-                <template lwc:else>
-
-                    <span class="status">
-                        {statusLabel}
+                <template if:true={isMember}>
+                    <span class="status status-member">
+                        <lightning-icon
+                            icon-name="utility:success"
+                            size="xx-small"
+                            alternative-text="Member">
+                        </lightning-icon>
+                        Member
                     </span>
-
                 </template>
 
-                <template lwc:if={showManageButton}>
 
-                    <lightning-button
-                        label="Manage"
-                        variant="neutral"
-                        onclick={handleManage}>
-                    </lightning-button>
+                <template if:true={isPending}>
+                    <span class="status status-pending">
+                        <lightning-icon
+                            icon-name="utility:clock"
+                            size="xx-small"
+                            alternative-text="Pending">
+                        </lightning-icon>
+                        Request Pending
+                    </span>
+                </template>
 
+
+                <template if:true={isOnHold}>
+                    <span class="status status-hold">
+                        <lightning-icon
+                            icon-name="utility:pause"
+                            size="xx-small"
+                            alternative-text="On Hold">
+                        </lightning-icon>
+                        Membership On Hold
+                    </span>
+                </template>
+
+
+                <template if:true={isRejected}>
+                    <span class="status status-rejected">
+                        Request Rejected
+                    </span>
+                </template>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="group-actions">
+
+                <button
+                    class="secondary-button"
+                    onclick={handleViewDetails}>
+                    View Details
+                </button>
+
+
+                <template if:true={canJoin}>
+                    <button
+                        class="primary-button"
+                        onclick={handleJoin}
+                        disabled={isJoining}>
+
+                        <template if:true={isJoining}>
+                            <lightning-spinner
+                                alternative-text="Joining"
+                                size="small">
+                            </lightning-spinner>
+                        </template>
+
+                        <template if:false={isJoining}>
+                            Join Group
+                        </template>
+
+                    </button>
                 </template>
 
             </div>
 
         </div>
 
-    </lightning-card>
-
+    </article>
 </template>

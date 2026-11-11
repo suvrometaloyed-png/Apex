@@ -1,145 +1,246 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 
 import getGroups from '@salesforce/apex/GroupController.getGroups';
 import joinGroup from '@salesforce/apex/GroupController.joinGroup';
 
+import { refreshApex } from '@salesforce/apex';
+
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import userId from '@salesforce/user/Id';
+
 export default class GroupList extends LightningElement {
+    currentUserId = userId;
+    groups = [];
 
-        /*groups = [
+    searchTerm = '';
 
-                {
-                    id:'1',
-                    name:'SOB Kolkata',
-                    joinPolicy:'OPEN',
-                    membershipStatus:'NONE'
-                },
+    isLoading = true;
 
-                {
-                    id:'2',
-                    name:'Adventure Riders',
-                    joinPolicy:'REQUEST',
-                    membershipStatus:'PENDING'
-                },
+    errorMessage;
 
-                {
-                    id:'3',
-                    name:'Mountain Riders',
-                    joinPolicy:'OPEN',
-                    membershipStatus:'ACTIVE'
-                }
+    wiredGroupsResult;
 
-                ];*/
-        connectedCallback() {
 
-            this.loadGroups();
+    // ---------------------------------------------------------
+    // LOAD GROUPS
+    // ---------------------------------------------------------
 
+    @wire(getGroups)
+    wiredGroups(result) {
+
+        this.wiredGroupsResult = result;
+
+        const { data, error } = result;
+
+        this.isLoading = false;
+
+        if (data) {
+
+            this.groups = data;
+
+            this.errorMessage = undefined;
+
+        } else if (error) {
+
+            this.groups = [];
+
+            this.errorMessage =
+                this.reduceError(error);
+        }
+    }
+
+
+    // ---------------------------------------------------------
+    // FILTERED GROUPS
+    // ---------------------------------------------------------
+
+    get filteredGroups() {
+
+        if (!this.searchTerm) {
+            return this.groups;
         }
 
-        loadGroups() {
+        const search =
+            this.searchTerm.toLowerCase();
 
-            this.loading = true;
+        return this.groups.filter(group => {
 
-            getGroups()
+            const name =
+                group.name?.toLowerCase() || '';
 
-                .then(result => {
 
-                    this.groups = result;
 
-                })
+            return (
+                name.includes(search)
+                
+            );
+        });
+    }
 
-                .catch(error => {
 
-                    this.error = error;
+    get hasGroups() {
 
-                })
+        return this.filteredGroups.length > 0;
+    }
 
-                .finally(() => {
 
-                    this.loading = false;
+    // ---------------------------------------------------------
+    // SEARCH
+    // ---------------------------------------------------------
 
-                });
+    handleSearch(event) {
 
+        this.searchTerm =
+            event.target.value?.trim() || '';
+    }
+
+
+    clearSearch() {
+
+        this.searchTerm = '';
+    }
+
+
+    // ---------------------------------------------------------
+    // JOIN GROUP
+    // ---------------------------------------------------------
+
+    async handleJoinGroup(event) {
+
+        const groupId =
+            event.detail.groupId;
+
+        if (!groupId) {
+            return;
         }
 
-        isAdmin = true;
+        try {
 
-        handleJoin(event){
-
-            this.loading = true;
-
-            joinGroup({
-
-                groupId:event.detail
-
-            })
-
-            .then(()=>{
-
-                return this.loadGroups();
-
-            })
-
-            .catch(error=>{
-
-                this.showToast(
-                    'Error',
-                    error.body.message,
-                    'error'
-                );
-
-            })
-
-            .finally(()=>{
-
-                this.loading = false;
-
+            await joinGroup({
+                groupId: groupId
             });
 
-        }
+            this.showToast(
+                'Request Submitted',
+                'Your request to join the group has been submitted.',
+                'success'
+            );
 
-        handleManage(event){
+            /*
+             * Refresh Apex data so the card immediately
+             * reflects the new membership/request state.
+             */
+            await refreshApex(
+                this.wiredGroupsResult
+            );
 
-            console.log(event.detail);
+        } catch (error) {
 
-        }
-        forwardJoin(event){
-
-            this.dispatchEvent(
-
-                new CustomEvent(
-
-                    'join',
-
-                    {
-
-                        detail:event.detail
-
-                    }
-
-                )
-
+            this.showToast(
+                'Unable to Join Group',
+                this.reduceError(error),
+                'error'
             );
 
         }
+    }
 
-        forwardMembers(event){
 
-            this.dispatchEvent(
+    // ---------------------------------------------------------
+    // VIEW DETAILS
+    // ---------------------------------------------------------
 
-                new CustomEvent(
+    handleViewDetails(event) {
 
-                    'viewmembers',
-
-                    {
-
-                        detail:event.detail
-
+        this.dispatchEvent(
+            new CustomEvent(
+                'viewdetails',
+                {
+                    detail: {
+                        groupId:
+                            event.detail.groupId
                     }
+                }
+            )
+        );
+    }
 
-                )
 
+    // ---------------------------------------------------------
+    // RETRY
+    // ---------------------------------------------------------
+
+    async handleRetry() {
+
+        this.isLoading = true;
+
+        this.errorMessage = undefined;
+
+        try {
+
+            await refreshApex(
+                this.wiredGroupsResult
             );
 
+        } catch (error) {
+
+            this.errorMessage =
+                this.reduceError(error);
+
+        } finally {
+
+            this.isLoading = false;
+        }
+    }
+
+
+    // ---------------------------------------------------------
+    // TOAST
+    // ---------------------------------------------------------
+
+    showToast(
+        title,
+        message,
+        variant
+    ) {
+
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title,
+                message,
+                variant
+            })
+        );
+    }
+
+
+    // ---------------------------------------------------------
+    // ERROR HANDLING
+    // ---------------------------------------------------------
+
+    reduceError(error) {
+
+        if (!error) {
+            return 'An unexpected error occurred.';
         }
 
+        if (Array.isArray(error.body)) {
+
+            return error.body
+                .map(item => item.message)
+                .join(', ');
+        }
+
+        if (typeof error.body?.message === 'string') {
+
+            return error.body.message;
+        }
+
+        if (typeof error.message === 'string') {
+
+            return error.message;
+        }
+
+        return 'An unexpected error occurred.';
+    }
 }

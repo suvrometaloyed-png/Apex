@@ -1,29 +1,210 @@
-.card{
-
-    padding:20px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
+.group-card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease,
+                transform 0.2s ease;
 }
 
-.actions{
-
-    display:flex;
-
-    gap:12px;
-
-    align-items:center;
-
+.group-card:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
 }
 
-.status{
 
-    font-size:14px;
+/* ---------------------------------------------------------
+   IMAGE
+--------------------------------------------------------- */
 
-    color:#6B7280;
+.group-image-container {
+    position: relative;
+    height: 170px;
+    overflow: hidden;
+}
+
+.group-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.group-banner-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f3f3;
+}
+
+.group-logo {
+    position: absolute;
+    left: 18px;
+    bottom: -22px;
+
+    width: 64px;
+    height: 64px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+
+    background: #ffffff;
+}
+
+
+/* ---------------------------------------------------------
+   CONTENT
+--------------------------------------------------------- */
+
+.group-content {
+    padding: 30px 20px 20px;
+}
+
+.group-name {
+    margin: 0 0 8px;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.group-description {
+    margin: 0 0 14px;
+
+    color: #5f6368;
+    font-size: 14px;
+    line-height: 1.5;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+/* ---------------------------------------------------------
+   LOCATION / MEMBERS
+--------------------------------------------------------- */
+
+.group-location,
+.group-members {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-bottom: 7px;
+
+    color: #5f6368;
+    font-size: 13px;
+}
+
+
+/* ---------------------------------------------------------
+   STATUS
+--------------------------------------------------------- */
+
+.membership-status {
+    min-height: 26px;
+    margin-top: 10px;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-member {
+    background: #e8f5e9;
+    color: #237a3b;
+}
+
+.status-pending {
+    background: #fff4ce;
+    color: #7a5b00;
+}
+
+.status-hold {
+    background: #f2f2f2;
+    color: #5f6368;
+}
+
+.status-rejected {
+    background: #fde7e7;
+    color: #ba0517;
+}
+
+
+/* ---------------------------------------------------------
+   ACTIONS
+--------------------------------------------------------- */
+
+.group-actions {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+.primary-button,
+.secondary-button {
+    flex: 1;
+
+    min-height: 38px;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.primary-button {
+    border: 1px solid #0176d3;
+    background: #0176d3;
+    color: #ffffff;
+}
+
+.primary-button:hover {
+    background: #014486;
+}
+
+.secondary-button {
+    border: 1px solid #d8dde6;
+    background: #ffffff;
+    color: #181818;
+}
+
+.secondary-button:hover {
+    background: #f3f3f3;
+}
+
+.primary-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+
+@media screen and (max-width: 600px) {
+
+    .group-image-container {
+        height: 150px;
+    }
+
+    .group-actions {
+        flex-direction: column;
+    }
 
 }

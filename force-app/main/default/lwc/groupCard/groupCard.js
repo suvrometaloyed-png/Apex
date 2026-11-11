@@ -3,63 +3,81 @@ import { LightningElement, api } from 'lwc';
 export default class GroupCard extends LightningElement {
 
     @api group;
-    @api isAdmin = false;
+    isJoining = false;
 
-    handleViewMembers() {
+
+    /*get location() {
+        if (!this.group) {
+            return '';
+        }
+        const parts = [
+            this.group.city,
+            this.group.state,
+            this.group.country
+        ].filter(Boolean);
+
+        return parts.join(', ');
+    }*/
+
+
+    get membershipStatus() {
+        return this.group?.membershipStatus || 'NONE';
+    }
+
+
+    get isMember() {
+        return this.membershipStatus === 'Active';
+    }
+
+
+    get isPending() {
+        return this.membershipStatus === 'Pending';
+    }
+
+
+    get isOnHold() {
+        return this.membershipStatus === 'On Hold';
+    }
+
+
+    get isRejected() {
+        return this.membershipStatus === 'Rejected';
+    }
+
+
+    get canJoin() {
+        return (
+            this.membershipStatus === 'NONE' ||
+            this.membershipStatus === 'Rejected'
+        );
+    }
+
+
+    handleViewDetails() {
         this.dispatchEvent(
-            new CustomEvent('viewmembers', {
+            new CustomEvent('viewdetails', {
                 detail: {
-                    id: this.group.id,
-                    name: this.group.name
+                    groupId: this.group.id
                 }
             })
         );
     }
-    get membershipStatus() {
-        return this.group.membershipStatus;
-    }
 
-    get joinPolicy() {
-        return this.group.joinPolicy === 'OPEN'
-            ? 'Open membership'
-            : 'Approval required';
-    }
-
-    get showJoinButton() {
-        return !['ACTIVE', 'PENDING', 'REJECTED'].includes(this.membershipStatus);
-    }
-
-    get showManageButton() {
-        return this.isAdmin && this.membershipStatus === 'ACTIVE';
-    }
-
-    get statusLabel() {
-        switch (this.membershipStatus) {
-            case 'ACTIVE':
-                return 'Member';
-            case 'PENDING':
-                return 'Pending approval';
-            case 'REJECTED':
-                return 'Rejected';
-            default:
-                return '';
-        }
-    }
 
     handleJoin() {
+        this.isJoining = true;
         this.dispatchEvent(
-            new CustomEvent('join', {
-                detail: this.group.id
+            new CustomEvent('joingroup', {
+                detail: {
+                    groupId: this.group.id
+                }
             })
         );
     }
 
-    handleManage() {
-        this.dispatchEvent(
-            new CustomEvent('manage', {
-                detail: this.group.id
-            })
-        );
+
+    @api
+    joinCompleted() {
+        this.isJoining = false;
     }
-    
 }

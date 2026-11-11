@@ -1,0 +1,140 @@
+<template>
+    <c-dashboard-header></c-dashboard-header>
+    <div class="container">
+    <lightning-card title="User Profile" icon-name="standard:user">
+        <div slot="actions">
+            <template if:false={isEditMode}>
+                <lightning-button label="Edit Profile" icon-name="utility:edit" onclick={toggleEditMode}></lightning-button>
+            </template>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <template if:true={user.data}>
+                <!-- Header Banner / Avatar Section -->
+                <div class="profile-header slds-grid slds-grid_vertical-align-center slds-m-bottom_large">
+                    <div class="slds-m-right_medium">
+                        <template if:true={photoUrl}>
+                            <img src={photoUrl} alt="User Avatar" class="profile-avatar" />
+                        </template>
+                        <template if:false={photoUrl}>
+                            <lightning-icon icon-name="standard:avatar" size="large"></lightning-icon>
+                        </template>
+                    </div>
+                    <div>
+                        <h2 class="slds-text-heading_medium slds-font-weight_bold">{name}</h2>
+                        <p class="slds-text-body_regular slds-text-color_weak">{title}</p>
+                        <p class="slds-text-body_small slds-text-color_weak">{companyName}</p>
+                    </div>
+                </div>
+
+                <!-- View Mode -->
+                <template if:false={isEditMode}>
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-m-bottom_small">
+                            <span class="slds-truncate" title="Personal Information">Personal Information</span>
+                        </h3>
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Full Name</span>
+                                <div class="slds-form-element__static">{name}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Email</span>
+                                <div class="slds-form-element__static">{email}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Username</span>
+                                <div class="slds-form-element__static">{username}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Phone</span>
+                                <div class="slds-form-element__static">{phone}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Mobile Phone</span>
+                                <div class="slds-form-element__static">{mobilePhone}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Location</span>
+                                <div class="slds-form-element__static">{location}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-section slds-is-open slds-m-top_medium">
+                        <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-m-bottom_small">
+                            <span class="slds-truncate" title="Company Information">Work Details</span>
+                        </h3>
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Title</span>
+                                <div class="slds-form-element__static">{title}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Department</span>
+                                <div class="slds-form-element__static">{department}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+                                <span class="slds-form-element__label">Company</span>
+                                <div class="slds-form-element__static">{companyName}</div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-size_1-of-1 slds-m-bottom_small">
+                                <span class="slds-form-element__label">About Me</span>
+                                <div class="slds-form-element__static">{aboutMe}</div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Edit Mode using lightning-record-edit-form -->
+                <template if:true={isEditMode}>
+                    <lightning-record-edit-form
+                        record-id={userId}
+                        object-api-name="User"
+                        onsuccess={handleSuccess}>
+
+                        <lightning-messages></lightning-messages>
+
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name={userFields.name}></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name={userFields.phone}></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name={userFields.mobilePhone}></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name={userFields.title}></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name={userFields.department}></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name={userFields.companyName}></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1">
+                                <lightning-input-field field-name={userFields.aboutMe}></lightning-input-field>
+                            </div>
+                        </div>
+
+                        <div class="slds-m-top_medium slds-text-align_right">
+                            <lightning-button class="slds-m-right_small" label="Cancel" onclick={handleCancel}></lightning-button>
+                            <lightning-button variant="brand" type="submit" label="Save"></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </template>
+            </template>
+
+            <!-- Loading Spinner -->
+            <template if:false={user.data}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <lightning-spinner alternative-text="Loading User Details..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+    </div>
+</template>
+

@@ -1,58 +1,55 @@
-public with sharing class GroupController {
-
-    /*@AuraEnabled(cacheable=true)
+public with sharing class GroupController { 
+    @AuraEnabled(cacheable=true)
     public static List<GroupWrapper> getGroups() {
-        return GroupService.getGroups();
+        try {
+            return GroupService.getGroups();
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static void joinGroup(Id groupId) {
-        GroupService.joinGroup(groupId);
+        try {
+            GroupService.joinGroup(groupId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled(cacheable=true)
     public static List<GroupMemberWrapper> getGroupMembers(Id groupId) {
-        return GroupService.getGroupMembers(groupId);
-    }
-    @AuraEnabled
-    public static void resolveMembership(
-        Id membershipId,
-        String action
-    ){
-        GroupService.resolveMembership(
-            membershipId,
-            action
-        );
-    }*/
-        @AuraEnabled(cacheable=true)
-        public static List<GroupWrapper> getGroups() {
-            return GroupService.getGroups();
-        }
-
-        @AuraEnabled
-        public static void joinGroup(Id groupId) {
-            GroupService.joinGroup(groupId);
-        }
-
-        @AuraEnabled(cacheable=true)
-        public static List<GroupMemberWrapper> getGroupMembers(Id groupId) {
+        try {
             return GroupService.getGroupMembers(groupId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
+    }
 
-        @AuraEnabled(cacheable=true)
-        public static GroupWrapper getGroupDetails(Id groupId) {
+    @AuraEnabled(cacheable=true)
+    public static GroupWrapper getGroupDetails(Id groupId) {
+        try {
             return GroupService.getGroupDetails(groupId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
+    }
 
-        @AuraEnabled(cacheable=true)
-        public static Boolean isCurrentUserMember(Id groupId) {
+    @AuraEnabled(cacheable=true)
+    public static Boolean isCurrentUserMember(Id groupId) {
+        try {
             return GroupService.isCurrentUserMember(groupId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
+    }
 
-        @AuraEnabled(cacheable=true)
-        public static Integer getMemberCount(Id groupId) {
+    @AuraEnabled(cacheable=true)
+    public static Integer getMemberCount(Id groupId) {
+        try {
             return GroupService.getMemberCount(groupId);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
-
-    
+    }
 }

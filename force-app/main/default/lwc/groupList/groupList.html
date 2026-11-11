@@ -1,29 +1,137 @@
 <template>
 
-<lightning-spinner
-    if:true={loading}>
-</lightning-spinner>
+    <section class="groups-container">
 
-<div class="grid">
+        <!-- Header -->
+        <div class="groups-header">
 
-    <template
-        for:each={groups}
-        for:item="group">
+            <div>
+                <h1 class="groups-title">
+                    Riding Groups
+                </h1>
 
-        <c-group-card
+                <p class="groups-subtitle">
+                    Find riders, join a group and ride together.
+                </p>
+            </div>
 
-            key={group.id}
+            <div class="group-count">
+                {filteredGroups.length} Groups
+            </div>
 
-            group={group}
+        </div>
 
-            onjoin={forwardJoin}
 
-            onviewmembers={forwardMembers}>
+        <!-- Search -->
+        <div class="search-container">
 
-        </c-group-card>
+            <lightning-input
+                type="search"
+                label="Search groups"
+                variant="label-hidden"
+                placeholder="Search by group name or location..."
+                value={searchTerm}
+                onchange={handleSearch}>
+            </lightning-input>
 
-    </template>
+        </div>
 
-</div>
+
+        <!-- Loading -->
+        <template if:true={isLoading}>
+
+            <div class="loading-container">
+
+                <lightning-spinner
+                    alternative-text="Loading groups"
+                    size="medium">
+                </lightning-spinner>
+
+            </div>
+
+        </template>
+
+
+        <!-- Error -->
+        <template if:true={errorMessage}>
+
+            <div class="error-container">
+
+                <lightning-icon
+                    icon-name="utility:error"
+                    size="small"
+                    alternative-text="Error">
+                </lightning-icon>
+
+                <span>{errorMessage}</span>
+
+                <button
+                    class="retry-button"
+                    onclick={handleRetry}>
+                    Retry
+                </button>
+
+            </div>
+
+        </template>
+
+
+        <!-- Groups -->
+        <template if:false={isLoading}>
+
+            <template if:true={hasGroups}>
+
+                <div class="groups-grid">
+
+                    <template
+                        for:each={filteredGroups}
+                        for:item="group">
+
+                        <c-group-card
+                            key={group.id}
+                            group={group}
+                            onjoingroup={handleJoinGroup}
+                            onviewdetails={handleViewDetails}>
+                        </c-group-card>
+
+                    </template>
+
+                </div>
+
+            </template>
+
+
+            <!-- No Search Results -->
+            <template if:false={hasGroups}>
+
+                <div class="empty-state">
+
+                    <lightning-icon
+                        icon-name="utility:groups"
+                        size="large"
+                        alternative-text="No groups">
+                    </lightning-icon>
+
+                    <h2>No groups found</h2>
+
+                    <p>
+                        Try changing your search criteria.
+                    </p>
+
+                    <template if:true={searchTerm}>
+                        <button
+                            class="clear-button"
+                            onclick={clearSearch}>
+                            Clear Search
+                        </button>
+                    </template>
+
+                </div>
+
+            </template>
+
+        </template>
+
+    </section>
 
 </template>

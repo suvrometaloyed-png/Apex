@@ -1,0 +1,27 @@
+.container{
+
+    max-width:1152px;
+
+    margin:auto;
+
+    padding:64px 24px;
+
+}
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0176d3;
+}
+
+.profile-header {
+    border-bottom: 1px solid #dddbda;
+    padding-bottom: 1rem;
+}
+
+.slds-form-element__static {
+    font-weight: 600;
+    color: #181818;
+}
+
