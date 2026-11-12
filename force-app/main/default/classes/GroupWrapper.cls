@@ -6,6 +6,7 @@ public class GroupWrapper {
     @AuraEnabled public String joinPolicy;
 
     @AuraEnabled public String membershipStatus;
+    @AuraEnabled public Date joiningDate;
 
     @AuraEnabled public Integer memberCount;
 

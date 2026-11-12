@@ -18,6 +18,8 @@ export default class GroupList extends LightningElement {
 
     errorMessage;
 
+    selectedGroupId;
+
     wiredGroupsResult;
 
 
@@ -152,16 +154,29 @@ export default class GroupList extends LightningElement {
 
     handleViewDetails(event) {
 
-        this.dispatchEvent(
-            new CustomEvent(
-                'viewdetails',
-                {
-                    detail: {
-                        groupId:
-                            event.detail.groupId
-                    }
-                }
-            )
+        this.selectedGroupId =
+            event.detail.groupId;
+    }
+
+
+    handleCloseDetails() {
+
+        this.selectedGroupId = undefined;
+    }
+
+
+    /*
+     * Derived from the loaded list so the modal stays in sync
+     * after refreshApex (e.g. status changes).
+     */
+    get selectedGroup() {
+
+        if (!this.selectedGroupId) {
+            return undefined;
+        }
+
+        return this.groups.find(
+            group => group.id === this.selectedGroupId
         );
     }
 

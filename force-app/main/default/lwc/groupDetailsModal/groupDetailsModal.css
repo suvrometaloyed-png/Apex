@@ -1,0 +1,88 @@
+.section-title {
+    margin: 0 0 8px;
+
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #5f6368;
+}
+
+.status-block,
+.details-block {
+    margin-bottom: 20px;
+    padding: 14px 16px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+}
+
+.status-message {
+    margin: 10px 0 0;
+    font-size: 14px;
+}
+
+.detail-row {
+    display: flex;
+    gap: 12px;
+
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.detail-row-block {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-label {
+    min-width: 140px;
+    color: #5f6368;
+    font-weight: 600;
+}
+
+.policy-text {
+    margin: 0;
+    white-space: pre-line;
+}
+
+.policy-empty {
+    color: #5f6368;
+    font-style: italic;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-member {
+    background: #e8f5e9;
+    color: #237a3b;
+}
+
+.status-pending {
+    background: #fff4ce;
+    color: #7a5b00;
+}
+
+.status-hold {
+    background: #f2f2f2;
+    color: #5f6368;
+}
+
+.status-rejected {
+    background: #fde7e7;
+    color: #ba0517;
+}

@@ -1,0 +1,106 @@
+<template>
+    <template lwc:if={group}>
+
+        <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="group-details-title"
+            tabindex="-1"
+            class="slds-modal slds-fade-in-open"
+            onkeydown={handleKeydown}>
+
+            <div class="slds-modal__container">
+
+                <header class="slds-modal__header">
+
+                    <button
+                        lwc:ref="closeButton"
+                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close"
+                        onclick={handleClose}>
+                        <lightning-icon
+                            icon-name="utility:close"
+                            alternative-text="Close"
+                            variant="inverse"
+                            size="small">
+                        </lightning-icon>
+                    </button>
+
+                    <h2
+                        id="group-details-title"
+                        class="slds-modal__title slds-hyphenate">
+                        {group.name}
+                    </h2>
+
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+
+                    <!-- Joining status -->
+                    <h3 class="section-title">Joining Status</h3>
+
+                    <div class="status-block">
+                        <span class={statusClass}>{statusLabel}</span>
+                        <p class="status-message">{statusMessage}</p>
+
+                        <template lwc:if={group.joiningDate}>
+                            <p class="detail-row">
+                                <span class="detail-label">Requested / joined on</span>
+                                <lightning-formatted-date-time
+                                    value={group.joiningDate}
+                                    year="numeric"
+                                    month="short"
+                                    day="2-digit"
+                                    time-zone="UTC">
+                                </lightning-formatted-date-time>
+                            </p>
+                        </template>
+                    </div>
+
+                    <!-- Group details -->
+                    <h3 class="section-title">Group Details</h3>
+
+                    <div class="details-block">
+
+                        <p class="detail-row">
+                            <span class="detail-label">Name</span>
+                            <span>{group.name}</span>
+                        </p>
+
+                        <p class="detail-row">
+                            <span class="detail-label">Members</span>
+                            <span>{memberCountLabel}</span>
+                        </p>
+
+                        <div class="detail-row detail-row-block">
+                            <span class="detail-label">Joining Policy</span>
+                            <template lwc:if={group.joinPolicy}>
+                                <p class="policy-text">{group.joinPolicy}</p>
+                            </template>
+                            <template lwc:else>
+                                <p class="policy-text policy-empty">
+                                    No joining policy has been provided for this group.
+                                </p>
+                            </template>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <button
+                        class="slds-button slds-button_neutral"
+                        onclick={handleClose}>
+                        Close
+                    </button>
+                </footer>
+
+            </div>
+
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+    </template>
+</template>

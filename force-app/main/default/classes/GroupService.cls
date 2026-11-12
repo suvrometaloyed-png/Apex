@@ -283,13 +283,13 @@ public with sharing class GroupService {
         wrapper.name =
             groupRecord.Name;
 
-        /*wrapper.description =
-            groupRecord.Description__c;
-
         wrapper.joinPolicy =
             groupRecord.Joining_Policy__c;
 
-        /*wrapper.bannerImage =
+        /*wrapper.description =
+            groupRecord.Description__c;
+
+        wrapper.bannerImage =
             groupRecord.Banner_Image__c;
 
         wrapper.logo =
@@ -314,8 +314,14 @@ public with sharing class GroupService {
          */
         if (memberships.containsKey(groupRecord.Id)) {
 
+            Group_Membership__c membership =
+                memberships.get(groupRecord.Id);
+
             wrapper.membershipStatus =
-                memberships.get(groupRecord.Id).Status__c;
+                membership.Status__c;
+
+            wrapper.joiningDate =
+                membership.Joining_Date__c;
 
         } else {
 

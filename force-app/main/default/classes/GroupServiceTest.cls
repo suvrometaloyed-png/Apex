@@ -104,6 +104,7 @@ private class GroupServiceTest {
 
             System.assertNotEquals(null, details, 'Group details should not be null');
             System.assertEquals(testGroup.Id, details.id, 'Returned group ID should match');
+            System.assertEquals('Open', details.joinPolicy, 'Joining policy should be returned');
         }
     }
 

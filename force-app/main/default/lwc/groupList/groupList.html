@@ -132,6 +132,14 @@
 
         </template>
 
+        <!-- Group Details -->
+        <template lwc:if={selectedGroup}>
+            <c-group-details-modal
+                group={selectedGroup}
+                onclose={handleCloseDetails}>
+            </c-group-details-modal>
+        </template>
+
     </section>
 
 </template>
