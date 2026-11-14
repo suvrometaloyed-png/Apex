@@ -1,11 +1,44 @@
 <template>
-
     <c-dashboard-header></c-dashboard-header>
+
     <div class="container">
-        <div class="placeholder">
-
-            Upcoming rides will appear here.
-
+        <div class="header-section">
+            <h1 class="title">Upcoming Rides</h1>
+            <p class="subtitle">View and explore all scheduled upcoming rides</p>
         </div>
-    </div>    
+
+        <template if:true={isLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading upcoming rides" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="error-container">
+                <p class="error-text">Failed to load upcoming rides. Please try again later.</p>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasRides}>
+                <div class="table-card">
+                    <lightning-datatable
+                        key-field="id"
+                        data={rides}
+                        columns={columns}
+                        hide-checkbox-column="true"
+                        show-row-number-column="true">
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <template if:false={hasRides}>
+                <div class="empty-state">
+                    <lightning-icon icon-name="utility:event" size="large" alternative-text="No Rides"></lightning-icon>
+                    <p class="empty-title">No upcoming rides found</p>
+                    <p class="empty-subtitle">Check back later or check with your riding group for scheduled rides.</p>
+                </div>
+            </template>
+        </template>
+    </div>
 </template>
