@@ -1,0 +1,85 @@
+<template>
+    <!-- Ongoing Rides Section -->
+    <div class="rides-container">
+        <div class="header-section">
+            <h2 class="title">Ongoing Rides</h2>
+            <p class="subtitle">View and explore all ongoing rides</p>
+        </div>
+
+        <template if:true={isOngoingLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading ongoing rides" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={ongoingError}>
+            <div class="error-container">
+                <p class="error-text">Failed to load ongoing rides. Please try again later.</p>
+            </div>
+        </template>
+
+        <template if:false={isOngoingLoading}>
+            <template if:true={hasOngoingRides}>
+                <div class="table-card">
+                    <lightning-datatable
+                        key-field="id"
+                        data={ongoingRides}
+                        columns={columns}
+                        hide-checkbox-column="true"
+                        show-row-number-column="true">
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <template if:false={hasOngoingRides}>
+                <div class="empty-state">
+                    <lightning-icon icon-name="utility:event" size="large" alternative-text="No Ongoing Rides"></lightning-icon>
+                    <p class="empty-title">No ongoing rides found</p>
+                    <p class="empty-subtitle">Check back later or check with your riding group for scheduled rides.</p>
+                </div>
+            </template>
+        </template>
+    </div>
+
+    <!-- Completed Rides Section -->
+    <div class="rides-container slds-m-top_x-large">
+        <div class="header-section">
+            <h2 class="title">Completed Rides</h2>
+            <p class="subtitle">View and explore all completed rides</p>
+        </div>
+
+        <template if:true={isCompletedLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading completed rides" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={completedError}>
+            <div class="error-container">
+                <p class="error-text">Failed to load completed rides. Please try again later.</p>
+            </div>
+        </template>
+
+        <template if:false={isCompletedLoading}>
+            <template if:true={hasCompletedRides}>
+                <div class="table-card">
+                    <lightning-datatable
+                        key-field="id"
+                        data={completedRides}
+                        columns={columns}
+                        hide-checkbox-column="true"
+                        show-row-number-column="true">
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <template if:false={hasCompletedRides}>
+                <div class="empty-state">
+                    <lightning-icon icon-name="utility:event" size="large" alternative-text="No Completed Rides"></lightning-icon>
+                    <p class="empty-title">No completed rides found</p>
+                    <p class="empty-subtitle">Completed rides will appear here once finished.</p>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

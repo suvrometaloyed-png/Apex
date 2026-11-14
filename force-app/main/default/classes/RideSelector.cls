@@ -1,4 +1,4 @@
-public with sharing class RideSelector {
+public class RideSelector {
 
     /**
      * Returns all rides with Status__c = 'Upcoming' ordered by Start_Time__c asc.
@@ -17,6 +17,48 @@ public with sharing class RideSelector {
                 Created_By__r.Name
             FROM Ride__c
             WHERE Status__c = 'Upcoming'
+            ORDER BY Start_Time__c ASC NULLS LAST, Name ASC
+        ];
+    }
+
+        /**
+         * Returns all rides with Status__c = 'In Progress' ordered by Start_Time__c asc.
+         */
+        public static List<Ride__c> getOngoingRides() {
+            return [
+                SELECT
+                    Id,
+                    Name,
+                    Start_Time__c,
+                    End_Date__c,
+                    Status__c,
+                    Riding_Group__c,
+                    Riding_Group__r.Name,
+                    Created_By__c,
+                    Created_By__r.Name
+                FROM Ride__c
+                WHERE Status__c = 'In Progress'
+                ORDER BY Start_Time__c ASC NULLS LAST, Name ASC
+            ];
+        }
+
+        /**
+     * Returns all rides with Status__c = 'Completed' ordered by Start_Time__c asc.
+     */
+    public static List<Ride__c> getCompletedRides() {
+        return [
+            SELECT
+                Id,
+                Name,
+                Start_Time__c,
+                End_Date__c,
+                Status__c,
+                Riding_Group__c,
+                Riding_Group__r.Name,
+                Created_By__c,
+                Created_By__r.Name
+            FROM Ride__c
+            WHERE Status__c = 'Completed'
             ORDER BY Start_Time__c ASC NULLS LAST, Name ASC
         ];
     }

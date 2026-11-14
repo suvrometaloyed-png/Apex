@@ -1,4 +1,4 @@
-public with sharing class RideWrapper {
+public class RideWrapper {
     @AuraEnabled public Id id { get; set; }
     @AuraEnabled public String name { get; set; }
     //@AuraEnabled public String description { get; set; }
@@ -21,7 +21,7 @@ public with sharing class RideWrapper {
         this.status = ride.Status__c;
         this.ridingGroupId = ride.Riding_Group__c;
         this.ridingGroupName = ride.Riding_Group__r != null ? ride.Riding_Group__r.Name : null;
-        this.createdById = ride.Created_By__c;
-        this.createdByName = ride.Created_By__r != null ? ride.Created_By__r.Name : null;
+        //this.createdById = ride.Created_By__c;
+        //this.createdByName = ride.Created_By__r != null ? ride.Created_By__r.Name : null;
     }
 }
