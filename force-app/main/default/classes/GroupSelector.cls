@@ -55,13 +55,18 @@ public with sharing class GroupSelector {
             return result;
         }
 
+        Set<String> activeStatuses = new Set<String>{
+            MembershipConstants.ACTIVE,
+            MembershipConstants.REQUEST_APPROVED
+        };
+
         for (AggregateResult ar : [
             SELECT
                 Group__c groupId,
                 COUNT(Id) memberCount
             FROM Group_Membership__c
             WHERE Group__c IN :groupIds
-            AND Status__c = :MembershipConstants.REQUEST_APPROVED
+            AND Status__c IN :activeStatuses
             GROUP BY Group__c
         ]) {
 
@@ -155,6 +160,11 @@ public with sharing class GroupSelector {
      */
     public static List<Group_Membership__c> getGroupMembers(Id groupId) {
 
+        Set<String> activeStatuses = new Set<String>{
+            MembershipConstants.ACTIVE,
+            MembershipConstants.REQUEST_APPROVED
+        };
+
         return [
             SELECT
                 Id,
@@ -166,7 +176,7 @@ public with sharing class GroupSelector {
                 Joining_Date__c
             FROM Group_Membership__c
             WHERE Group__c = :groupId
-            AND Status__c = :MembershipConstants.REQUEST_APPROVED
+            AND Status__c IN :activeStatuses
             ORDER BY Contact__r.Name
         ];
     }

@@ -26,29 +26,35 @@ export default class GroupCard extends LightningElement {
 
 
     get isMember() {
-        return this.membershipStatus === 'Active';
+        const status = (this.membershipStatus || '').toLowerCase();
+        return status === 'active' || status === 'approved';
     }
 
 
     get isPending() {
-        return this.membershipStatus === 'Pending';
+        const status = (this.membershipStatus || '').toLowerCase();
+        return status === 'pending';
     }
 
 
     get isOnHold() {
-        return this.membershipStatus === 'On Hold';
+        const status = (this.membershipStatus || '').toLowerCase();
+        return status === 'on hold' || status === 'on_hold';
     }
 
 
     get isRejected() {
-        return this.membershipStatus === 'Rejected';
+        const status = (this.membershipStatus || '').toLowerCase();
+        return status === 'rejected';
     }
 
 
     get canJoin() {
+        const status = (this.membershipStatus || '').toUpperCase();
         return (
-            this.membershipStatus === 'NONE' ||
-            this.membershipStatus === 'Rejected'
+            status === 'NONE' ||
+            status === '' ||
+            status === 'REJECTED'
         );
     }
 

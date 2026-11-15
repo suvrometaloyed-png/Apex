@@ -168,14 +168,29 @@ export default class GroupList extends LightningElement {
 
     closeFlowModal() {
         this.isFlowOpen = false;
+        this.resetJoinButtons();
+    }
+
+    resetJoinButtons() {
+        const cards = this.template.querySelectorAll('c-group-card');
+        if (cards) {
+            cards.forEach((card) => {
+                if (typeof card.joinCompleted === 'function') {
+                    card.joinCompleted();
+                }
+            });
+        }
     }
 
     async handleFlowStatusChange(event) {
-        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+        const status = event.detail.status;
+        if (status === 'FINISHED' || status === 'FINISHED_SCREEN') {
             this.closeFlowModal();
             if (this.wiredGroupsResult) {
                 await refreshApex(this.wiredGroupsResult);
             }
+        } else if (status === 'ERROR') {
+            this.closeFlowModal();
         }
     }
 
