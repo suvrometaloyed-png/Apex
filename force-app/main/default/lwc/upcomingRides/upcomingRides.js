@@ -1,5 +1,6 @@
 import { LightningElement, wire } from 'lwc';
 import getUpcomingRides from '@salesforce/apex/RideController.getUpcomingRides';
+import userId from '@salesforce/user/Id';
 
 const COLUMNS = [
     {
@@ -37,13 +38,20 @@ const COLUMNS = [
         label: 'Status',
         fieldName: 'status',
         type: 'text'
+    },
+    {
+        type: 'button',
+        cellAttributes: {
+            alignment: 'center'
+        },
+        typeAttributes: {
+            label: 'Join Ride',
+            name: 'join_ride',
+            title: 'Join Ride',
+            variant: 'brand',
+            disabled: false
+        }
     }
-    /*{
-        label: 'Description',
-        fieldName: 'description',
-        type: 'text',
-        wrapText: true
-    }*/
 ];
 
 export default class UpcomingRides extends LightningElement {
@@ -51,6 +59,12 @@ export default class UpcomingRides extends LightningElement {
     rides = [];
     error;
     isLoading = true;
+
+    // Flow modal state
+    isFlowOpen = false;
+    selectedRideId;
+    selectedRideName = '';
+    flowInputVariables = [];
 
     @wire(getUpcomingRides)
     wiredRides({ error, data }) {
@@ -66,5 +80,40 @@ export default class UpcomingRides extends LightningElement {
 
     get hasRides() {
         return this.rides && this.rides.length > 0;
+    }
+
+    handleRowAction(event) {
+        const actionName = event.detail.action.name;
+        const row = event.detail.row;
+
+        if (actionName === 'join_ride') {
+            this.selectedRideId = row.id;
+            this.selectedRideName = row.name;
+            this.flowInputVariables = [
+                {
+                    name: 'RideId',
+                    type: 'String',
+                    value: row.id
+                },
+                {
+                    name: 'LoggedInUserName',
+                    type: 'String',
+                    value: userId
+                }
+            ];
+            this.isFlowOpen = true;
+        }
+    }
+
+    closeFlowModal() {
+        this.isFlowOpen = false;
+        this.selectedRideId = null;
+        this.selectedRideName = '';
+    }
+
+    handleFlowStatusChange(event) {
+        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+            this.closeFlowModal();
+        }
     }
 }
