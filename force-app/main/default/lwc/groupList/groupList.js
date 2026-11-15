@@ -1,7 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 
 import getGroups from '@salesforce/apex/GroupController.getGroups';
-import joinGroup from '@salesforce/apex/GroupController.joinGroup';
+// import joinGroup from '@salesforce/apex/GroupController.joinGroup';
 
 import { refreshApex } from '@salesforce/apex';
 
@@ -21,6 +21,11 @@ export default class GroupList extends LightningElement {
     selectedGroupId;
 
     wiredGroupsResult;
+
+    // Flow modal state for Join Group
+    isFlowOpen = false;
+    joinGroupFlowName = 'Join_Group'; // Placeholder Flow name
+    flowInputVariables = [];
 
 
     // ---------------------------------------------------------
@@ -116,6 +121,8 @@ export default class GroupList extends LightningElement {
             return;
         }
 
+        // --- Commented out direct Apex joinGroup call to use Flow instead ---
+        /*
         try {
 
             await joinGroup({
@@ -128,10 +135,6 @@ export default class GroupList extends LightningElement {
                 'success'
             );
 
-            /*
-             * Refresh Apex data so the card immediately
-             * reflects the new membership/request state.
-             */
             await refreshApex(
                 this.wiredGroupsResult
             );
@@ -144,6 +147,35 @@ export default class GroupList extends LightningElement {
                 'error'
             );
 
+        }
+        */
+
+        // Launch Join Group Flow modal
+        this.flowInputVariables = [
+            {
+                name: 'varGroupId',
+                type: 'String',
+                value: groupId
+            },
+            {
+                name: 'LoggedInUserId',
+                type: 'String',
+                value: this.currentUserId
+            }
+        ];
+        this.isFlowOpen = true;
+    }
+
+    closeFlowModal() {
+        this.isFlowOpen = false;
+    }
+
+    async handleFlowStatusChange(event) {
+        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+            this.closeFlowModal();
+            if (this.wiredGroupsResult) {
+                await refreshApex(this.wiredGroupsResult);
+            }
         }
     }
 

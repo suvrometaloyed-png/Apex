@@ -3,8 +3,8 @@ import { LightningElement } from 'lwc';
 import getGroups
 from '@salesforce/apex/GroupController.getGroups';
 
-import joinGroup
-from '@salesforce/apex/GroupController.joinGroup';
+// import joinGroup
+// from '@salesforce/apex/GroupController.joinGroup';
 
 import getGroupMembers
 from '@salesforce/apex/GroupController.getGroupMembers';
@@ -42,6 +42,8 @@ export default class GroupsPage extends LightningElement {
     }
 
     handleJoin(event){
+        // --- Commented out direct Apex joinGroup call ---
+        /*
         joinGroup({
             groupId:event.detail
         })
@@ -51,6 +53,7 @@ export default class GroupsPage extends LightningElement {
         .catch(error=>{
             this.showError(error);
         });
+        */
     }
 
     handleViewMembers(event){
