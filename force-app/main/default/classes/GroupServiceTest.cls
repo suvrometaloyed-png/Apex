@@ -247,6 +247,51 @@ private class GroupServiceTest {
     }
 
     @isTest
+    static void testGetJoinedGroups() {
+        Group__c testGroup = [SELECT Id FROM Group__c LIMIT 1];
+        User partnerUser = getPartnerUser();
+
+        insert new Group_Membership__c(
+            Group__c = testGroup.Id,
+            Contact__c = partnerUser.ContactId,
+            Status__c = MembershipConstants.ACTIVE,
+            Joining_Date__c = Date.today()
+        );
+
+        System.runAs(partnerUser) {
+            Test.startTest();
+            List<GroupWrapper> joined = GroupService.getJoinedGroups();
+            Test.stopTest();
+
+            System.assertEquals(1, joined.size(), 'Should return the one joined group');
+            System.assertEquals(testGroup.Id, joined[0].id, 'Returned group should match');
+            System.assertEquals(MembershipConstants.ACTIVE, joined[0].membershipStatus, 'Status should be Active');
+            System.assertEquals(1, joined[0].memberCount, 'Member count should be 1');
+        }
+    }
+
+    @isTest
+    static void testGetJoinedGroups_ExcludesPending() {
+        Group__c testGroup = [SELECT Id FROM Group__c LIMIT 1];
+        User partnerUser = getPartnerUser();
+
+        insert new Group_Membership__c(
+            Group__c = testGroup.Id,
+            Contact__c = partnerUser.ContactId,
+            Status__c = MembershipConstants.REQUEST_PENDING,
+            Joining_Date__c = Date.today()
+        );
+
+        System.runAs(partnerUser) {
+            Test.startTest();
+            List<GroupWrapper> joined = GroupService.getJoinedGroups();
+            Test.stopTest();
+
+            System.assertEquals(0, joined.size(), 'Pending requests should not count as joined');
+        }
+    }
+
+    @isTest
     static void testGetMemberCount() {
         Group__c testGroup = [SELECT Id FROM Group__c LIMIT 1];
         User partnerUser = getPartnerUser();

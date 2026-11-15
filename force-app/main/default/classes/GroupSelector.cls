@@ -156,6 +156,39 @@ public with sharing class GroupSelector {
 
 
     /**
+     * Returns the given Contact's memberships in active groups
+     * where the membership is Active or Approved.
+     */
+    public static List<Group_Membership__c> getJoinedMemberships(
+        Id contactId
+    ) {
+
+        if (contactId == null) {
+            return new List<Group_Membership__c>();
+        }
+
+        Set<String> joinedStatuses = new Set<String>{
+            MembershipConstants.ACTIVE,
+            MembershipConstants.REQUEST_APPROVED
+        };
+
+        return [
+            SELECT
+                Id,
+                Group__c,
+                Group__r.Name,
+                Status__c,
+                Joining_Date__c
+            FROM Group_Membership__c
+            WHERE Contact__c = :contactId
+            AND Status__c IN :joinedStatuses
+            AND Group__r.Active__c = TRUE
+            ORDER BY Group__r.Name
+        ];
+    }
+
+
+    /**
      * Returns active members of a group.
      */
     public static List<Group_Membership__c> getGroupMembers(Id groupId) {

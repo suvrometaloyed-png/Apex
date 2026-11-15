@@ -8,6 +8,15 @@ public with sharing class GroupController {
         }
     }
 
+    @AuraEnabled(cacheable=true)
+    public static List<GroupWrapper> getJoinedGroups() {
+        try {
+            return GroupService.getJoinedGroups();
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     @AuraEnabled
     public static void joinGroup(Id groupId) {
         try {

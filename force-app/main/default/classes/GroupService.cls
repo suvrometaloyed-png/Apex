@@ -52,6 +52,50 @@ public with sharing class GroupService {
         return results;
     }
 
+    /**
+     * Get the active groups the current user has joined.
+     */
+    public static List<GroupWrapper> getJoinedGroups() {
+
+        Id contactId = UserContextService.getContactId();
+
+        List<Group_Membership__c> memberships =
+            GroupSelector.getJoinedMemberships(contactId);
+
+        List<GroupWrapper> results = new List<GroupWrapper>();
+
+        if (memberships.isEmpty()) {
+            return results;
+        }
+
+        Set<Id> groupIds = new Set<Id>();
+
+        for (Group_Membership__c membership : memberships) {
+            groupIds.add(membership.Group__c);
+        }
+
+        Map<Id, Integer> memberCounts =
+            GroupSelector.getMemberCounts(groupIds);
+
+        for (Group_Membership__c membership : memberships) {
+
+            GroupWrapper wrapper = new GroupWrapper();
+
+            wrapper.id = membership.Group__c;
+            wrapper.name = membership.Group__r.Name;
+            wrapper.membershipStatus = membership.Status__c;
+            wrapper.joiningDate = membership.Joining_Date__c;
+            wrapper.memberCount =
+                memberCounts.containsKey(membership.Group__c)
+                    ? memberCounts.get(membership.Group__c)
+                    : 0;
+
+            results.add(wrapper);
+        }
+
+        return results;
+    }
+
     /*
     /**
      * Get details for one group.

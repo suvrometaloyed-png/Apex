@@ -1,0 +1,42 @@
+<template>
+    <div class="groups-container">
+        <template if:true={isLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading joined groups" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="error-container">
+                <p class="error-text">Failed to load your groups. Please try again later.</p>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasGroups}>
+                <div class="table-card">
+                    <lightning-datatable
+                        key-field="id"
+                        data={groups}
+                        columns={columns}
+                        hide-checkbox-column="true"
+                        show-row-number-column="true"
+                        sorted-by={sortedBy}
+                        sorted-direction={sortDirection}
+                        onsort={handleSort}>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <template if:false={hasGroups}>
+                <template if:false={error}>
+                    <div class="empty-state">
+                        <lightning-icon icon-name="utility:groups" size="large" alternative-text="No Groups"></lightning-icon>
+                        <p class="empty-title">You haven't joined any groups yet</p>
+                        <p class="empty-subtitle">Visit the Groups page to find and join a riding group.</p>
+                    </div>
+                </template>
+            </template>
+        </template>
+    </div>
+</template>

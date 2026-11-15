@@ -1,0 +1,52 @@
+.groups-container {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.table-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.spinner-container {
+    position: relative;
+    min-height: 200px;
+}
+
+.error-container {
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+}
+
+.error-text {
+    color: #b91c1c;
+    font-size: 14px;
+    margin: 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+}
+
+.empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #334155;
+    margin: 12px 0 4px;
+}
+
+.empty-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
