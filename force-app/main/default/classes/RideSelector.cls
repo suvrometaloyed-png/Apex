@@ -62,4 +62,30 @@ public class RideSelector {
             ORDER BY Start_Time__c ASC NULLS LAST, Name ASC
         ];
     }
+
+    /**
+     * Returns all ride participant records for a specific contact.
+     */
+    public static List<Ride_Participant__c> getParticipatedRidesByContactId(Id contactId) {
+        if (contactId == null) {
+            return new List<Ride_Participant__c>();
+        }
+        return [
+            SELECT
+                Id,
+                Status__c,
+                Contact__c,
+                Ride__c,
+                Ride__r.Id,
+                Ride__r.Name,
+                Ride__r.Start_Time__c,
+                Ride__r.End_Date__c,
+                Ride__r.Status__c,
+                Ride__r.Riding_Group__c,
+                Ride__r.Riding_Group__r.Name
+            FROM Ride_Participant__c
+            WHERE Contact__c = :contactId
+            ORDER BY Ride__r.Start_Time__c ASC NULLS LAST, Ride__r.Name ASC
+        ];
+    }
 }

@@ -1,0 +1,42 @@
+<template>
+    <div class="participated-rides-container">
+        <template if:true={isLoading}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Loading participated rides" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="error-container">
+                <p class="error-text">Failed to load your participated rides. Please try again later.</p>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasRides}>
+                <div class="table-card">
+                    <lightning-datatable
+                        key-field="participantId"
+                        data={rides}
+                        columns={columns}
+                        hide-checkbox-column="true"
+                        show-row-number-column="true"
+                        sorted-by={sortedBy}
+                        sorted-direction={sortDirection}
+                        onsort={handleSort}>
+                    </lightning-datatable>
+                </div>
+            </template>
+
+            <template if:false={hasRides}>
+                <template if:false={error}>
+                    <div class="empty-state">
+                        <lightning-icon icon-name="utility:date_time" size="large" alternative-text="No Participated Rides"></lightning-icon>
+                        <p class="empty-title">You haven't participated in any rides yet</p>
+                        <p class="empty-subtitle">Explore available upcoming rides to join and take part.</p>
+                    </div>
+                </template>
+            </template>
+        </template>
+    </div>
+</template>

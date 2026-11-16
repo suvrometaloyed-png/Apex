@@ -41,4 +41,19 @@ public class RideService {
 
         return wrappers;
     }
+
+    /**
+     * Get all rides the current external user/contact has participated in.
+     */
+    public static List<ParticipatedRideWrapper> getParticipatedRides() {
+        Id contactId = UserContextService.getContactId();
+        List<Ride_Participant__c> participants = RideSelector.getParticipatedRidesByContactId(contactId);
+        List<ParticipatedRideWrapper> wrappers = new List<ParticipatedRideWrapper>();
+
+        for (Ride_Participant__c participant : participants) {
+            wrappers.add(new ParticipatedRideWrapper(participant));
+        }
+
+        return wrappers;
+    }
 }

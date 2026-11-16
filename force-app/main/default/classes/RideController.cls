@@ -26,4 +26,13 @@ public class RideController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ParticipatedRideWrapper> getParticipatedRides() {
+        try {
+            return RideService.getParticipatedRides();
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }
