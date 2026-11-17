@@ -1,27 +1,214 @@
-.container{
-
-    max-width:1152px;
-
-    margin:auto;
-
-    padding:64px 24px;
-
-}
-.profile-avatar {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #0176d3;
+:host {
+  display: block;
+  background: #f8fafc;
+  min-height: 100vh;
 }
 
+.container {
+  max-width: 1152px;
+  margin: auto;
+  padding: 48px 24px 64px;
+  box-sizing: border-box;
+}
+
+/* Card shell */
+lightning-card {
+  display: block;
+  --slds-c-card-color-background: #ffffff;
+  --slds-c-card-radius-border: 18px;
+  --slds-c-card-shadow: none;
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+  animation: profile-fade-in 0.35s ease both;
+}
+
+/* Header banner */
 .profile-header {
-    border-bottom: 1px solid #dddbda;
-    padding-bottom: 1rem;
+  position: relative;
+  padding: 28px 24px;
+  margin: 0 0 28px;
+  border-radius: 16px;
+  border: 1px solid #e0e7ff;
+  background: linear-gradient(135deg, #eff6ff 0%, #eef2ff 55%, #f5f3ff 100%);
+}
+
+.profile-header h2 {
+  margin: 0 0 2px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+}
+
+.profile-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.profile-header p:first-of-type {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.profile-avatar {
+  display: block;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffffff;
+  box-shadow:
+    0 0 0 2px #2563eb,
+    0 8px 20px -4px rgba(37, 99, 235, 0.35);
+}
+
+/* Section headings */
+.slds-section__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.slds-section__title::before {
+  content: "";
+  width: 4px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #2563eb, #7c3aed);
+}
+
+.slds-section__title .slds-truncate {
+  color: inherit;
+}
+
+/* Field tiles in view mode */
+.slds-section .slds-col {
+  box-sizing: border-box;
+}
+
+.slds-section .slds-col > .slds-form-element__label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
 }
 
 .slds-form-element__static {
-    font-weight: 600;
-    color: #181818;
+  min-height: 48px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 12px;
+  word-break: break-word;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+.slds-form-element__static:hover {
+  background: #ffffff;
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 14px -4px rgba(37, 99, 235, 0.18);
+}
+
+/* Edit form */
+lightning-record-edit-form {
+  display: block;
+  padding: 24px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 16px;
+}
+
+lightning-input-field {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Action buttons */
+lightning-button {
+  --slds-c-button-radius-border: 10px;
+  --slds-c-button-brand-color-background: #2563eb;
+  --slds-c-button-brand-color-background-hover: #1d4ed8;
+  --slds-c-button-brand-color-border: #2563eb;
+  --slds-c-button-brand-color-border-hover: #1d4ed8;
+  --slds-c-button-neutral-color-border: #cbd5e1;
+  --slds-c-button-text-color: #1e293b;
+}
+
+lightning-button[variant="brand"] {
+  --slds-c-button-text-color: #ffffff;
+}
+
+.slds-text-align_right {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Loading */
+.slds-p-around_medium.slds-text-align_center {
+  min-height: 200px;
+  position: relative;
+}
+
+@keyframes profile-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 24px 12px 40px;
+  }
+
+  .profile-header {
+    padding: 20px 16px;
+  }
+
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  lightning-record-edit-form {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  lightning-card {
+    animation: none;
+  }
+
+  .slds-form-element__static {
+    transition: none;
+  }
+}
