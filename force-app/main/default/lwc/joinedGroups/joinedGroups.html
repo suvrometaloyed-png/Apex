@@ -1,5 +1,17 @@
 <template>
     <div class="groups-container">
+        <!-- Section Header -->
+        <div class="section-header">
+            <div class="header-left">
+                <h2 class="title">Groups joined</h2>
+                <p class="subtitle">Stay connected with your cycling communities</p>
+            </div>
+            <a class="browse-link" onclick={handleBrowseGroups}>
+                <span>Browse groups</span>
+                <span class="arrow-symbol">→</span>
+            </a>
+        </div>
+
         <template if:true={isLoading}>
             <div class="spinner-container">
                 <lightning-spinner alternative-text="Loading joined groups" size="medium"></lightning-spinner>
@@ -15,16 +27,53 @@
         <template if:false={isLoading}>
             <template if:true={hasGroups}>
                 <div class="table-card">
-                    <lightning-datatable
-                        key-field="id"
-                        data={groups}
-                        columns={columns}
-                        hide-checkbox-column="true"
-                        show-row-number-column="true"
-                        sorted-by={sortedBy}
-                        sorted-direction={sortDirection}
-                        onsort={handleSort}>
-                    </lightning-datatable>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th class="col-group">GROUP</th>
+                                <th class="col-date">JOINED ON</th>
+                                <th class="col-members">MEMBERS</th>
+                                <th class="col-status">STATUS</th>
+                                <!--th class="col-action">ACTION</th-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={formattedGroups} for:item="grp">
+                                <tr key={grp.id}>
+                                    <td class="col-group">
+                                        <div class="group-cell">
+                                            <div class={grp.badgeClass}>
+                                                <span>{grp.badgeIndex}</span>
+                                            </div>
+                                            <div class="group-info">
+                                                <span class="group-name">{grp.name}</span>
+                                                <template if:true={grp.description}>
+                                                    <span class="group-description">{grp.description}</span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="col-date">
+                                        <span class="date-text">{grp.formattedDate}</span>
+                                    </td>
+                                    <td class="col-members">
+                                        <span class="members-text">{grp.memberCount} members</span>
+                                    </td>
+                                    <td class="col-status">
+                                        <span class={grp.statusPillClass}>
+                                            <span class="status-dot"></span>
+                                            {grp.membershipStatus}
+                                        </span>
+                                    </td>
+                                    <!--td class="col-action">
+                                        <button class="view-btn" data-id={grp.id} onclick={handleViewGroup}>
+                                            View group
+                                        </button>
+                                    </td-->
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
             </template>
 

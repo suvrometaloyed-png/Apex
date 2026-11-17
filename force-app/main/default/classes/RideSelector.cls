@@ -8,6 +8,7 @@ public class RideSelector {
             SELECT
                 Id,
                 Name,
+                Description__c,
                 Start_Time__c,
                 End_Date__c,
                 Status__c,
@@ -32,6 +33,7 @@ public class RideSelector {
                     Start_Time__c,
                     End_Date__c,
                     Status__c,
+                    Description__c,
                     Riding_Group__c,
                     Riding_Group__r.Name,
                     Created_By__c,
@@ -50,6 +52,7 @@ public class RideSelector {
             SELECT
                 Id,
                 Name,
+                Description__c,
                 Start_Time__c,
                 End_Date__c,
                 Status__c,
@@ -78,6 +81,7 @@ public class RideSelector {
                 Ride__c,
                 Ride__r.Id,
                 Ride__r.Name,
+                Ride__r.Description__c,
                 Ride__r.Start_Time__c,
                 Ride__r.End_Date__c,
                 Ride__r.Status__c,

@@ -3,6 +3,7 @@ public class ParticipatedRideWrapper {
     @AuraEnabled public String participantStatus { get; set; }
     @AuraEnabled public Id rideId { get; set; }
     @AuraEnabled public String rideName { get; set; }
+    //@AuraEnabled public String description { get; set; }
     @AuraEnabled public Date startTime { get; set; }
     @AuraEnabled public Date endDate { get; set; }
     @AuraEnabled public String rideStatus { get; set; }
@@ -17,6 +18,7 @@ public class ParticipatedRideWrapper {
         if (participant.Ride__r != null) {
             this.rideId = participant.Ride__c;
             this.rideName = participant.Ride__r.Name;
+            //this.description = participant.Ride__r.Description__c;
             this.startTime = participant.Ride__r.Start_Time__c;
             this.endDate = participant.Ride__r.End_Date__c;
             this.rideStatus = participant.Ride__r.Status__c;
