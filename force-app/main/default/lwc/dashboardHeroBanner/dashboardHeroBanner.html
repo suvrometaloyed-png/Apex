@@ -1,0 +1,60 @@
+<template>
+    <div class="welcome-card">
+        <!-- Left Content Section -->
+        <div class="content-section">
+            <span class="date-label">{currentDateFormatted}</span>
+            <h1 class="welcome-heading">Welcome back, {userName} <span class="wave-emoji">👋</span></h1>
+            <p class="welcome-subtext">Ready for your next ride? Your riding community is moving.</p>
+            
+            <button class="explore-btn" onclick={handleExploreRides}>
+                <span>Explore rides</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Right Graphic Section -->
+        <div class="graphic-section">
+            <div class="illustration-circle">
+                <svg class="bike-svg" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Dashed Path -->
+                    <path d="M 15 80 Q 75 10 145 75" fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="2" stroke-dasharray="3 4"/>
+                    <!-- Route Accent Dots -->
+                    <circle cx="18" cy="72" r="5" fill="#34D399" />
+                    <circle cx="140" cy="55" r="5.5" fill="#FBBF24" />
+
+                    <!-- Bicycle & Rider -->
+                    <g stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                        <!-- Wheels -->
+                        <circle cx="50" cy="85" r="17" />
+                        <circle cx="110" cy="85" r="17" />
+
+                        <!-- Frame -->
+                        <line x1="50" y1="85" x2="72" y2="85" />
+                        <line x1="72" y1="85" x2="63" y2="62" />
+                        <line x1="72" y1="85" x2="97" y2="62" />
+                        <line x1="63" y1="62" x2="92" y2="62" />
+                        <line x1="110" y1="85" x2="97" y2="52" />
+
+                        <!-- Handlebar & Seat -->
+                        <line x1="93" y1="49" x2="103" y2="49" />
+                        <line x1="57" y1="58" x2="68" y2="58" />
+
+                        <!-- Cyclist Rider -->
+                        <!-- Head -->
+                        <circle cx="98" cy="32" r="4.5" fill="#FFFFFF" />
+                        <!-- Torso -->
+                        <line x1="98" y1="38" x2="80" y2="55" />
+                        <!-- Arm -->
+                        <line x1="91" y1="44" x2="98" y2="50" />
+                        <!-- Leg -->
+                        <polyline points="80,55 86,68 76,82" />
+                    </g>
+                </svg>
+            </div>
+            <span class="miles-caption">GOOD MILES AHEAD</span>
+        </div>
+    </div>
+</template>

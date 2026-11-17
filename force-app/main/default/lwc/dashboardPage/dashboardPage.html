@@ -1,29 +1,19 @@
 <template>
     <c-dashboard-header user-id={userId}></c-dashboard-header>
-        <div class="container">
+    
+    <div class="container banner-container">
+        <c-dashboard-hero-banner></c-dashboard-hero-banner>
+    </div>
 
-            <h1>Welcome to APEX</h1>
+    <div class="container">
+        <h2>Groups joined</h2>
+        <p>Manage your groups</p>
+        <c-joined-groups></c-joined-groups>
+    </div>
 
-            <p>Manage your groups, rides, and rider progression.</p>
-            <!--p>Logged in as: {userId}</p-->
-
-        </div>
-        <div class="container">
-
-            <h2>Groups joined</h2>
-
-            <p>Manage your groups</p>
-
-            <c-joined-groups></c-joined-groups>
-
-        </div>
-        <div class="container">
-
-            <h2>Upcoming Rides</h2>
-
-            <p>Manage your upcoming rides</p>
-
-            <c-participated-rides></c-participated-rides>
-
-        </div>
+    <div class="container">
+        <h2>Upcoming Rides</h2>
+        <p>Manage your upcoming rides</p>
+        <c-participated-rides></c-participated-rides>
+    </div>
 </template>
