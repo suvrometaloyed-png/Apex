@@ -1,0 +1,164 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+}
+
+.card-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  box-sizing: border-box;
+}
+
+.icon-tile {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tile-blue {
+  background-color: #eff6ff;
+  --slds-c-icon-color-foreground-default: #2563eb;
+  --sds-c-icon-color-foreground-default: #2563eb;
+}
+
+.tile-green {
+  background-color: #ecfdf5;
+  --slds-c-icon-color-foreground-default: #059669;
+  --sds-c-icon-color-foreground-default: #059669;
+}
+
+.tile-amber {
+  background-color: #fffbeb;
+  --slds-c-icon-color-foreground-default: #d97706;
+  --sds-c-icon-color-foreground-default: #d97706;
+}
+
+.tile-purple {
+  background-color: #faf5ff;
+  --slds-c-icon-color-foreground-default: #9333ea;
+  --sds-c-icon-color-foreground-default: #9333ea;
+}
+
+.card-body {
+  min-width: 0;
+}
+
+.card-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 6px 0;
+}
+
+.card-metric {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 10px;
+  margin: 0;
+}
+
+.card-value {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.card-unit {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.card-note {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #059669;
+}
+
+.trend {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.trend-up {
+  color: #059669;
+}
+
+.trend-down {
+  color: #dc2626;
+}
+
+.trend-caption {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.spinner-container {
+  position: relative;
+  min-height: 120px;
+}
+
+.error-container {
+  padding: 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.error-text {
+  color: #b91c1c;
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

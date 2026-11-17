@@ -1,0 +1,58 @@
+<template>
+  <section class="snapshot" aria-labelledby="snapshot-title">
+    <div class="section-header">
+      <h2 id="snapshot-title" class="title">Your riding snapshot</h2>
+      <p class="subtitle">A quick look at your activity and community</p>
+    </div>
+
+    <template if:true={isLoading}>
+      <div class="spinner-container">
+        <lightning-spinner
+          alternative-text="Loading your snapshot"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:true={error}>
+      <div class="error-container" role="alert">
+        <p class="error-text">
+          Failed to load your snapshot. Please try again later.
+        </p>
+      </div>
+    </template>
+
+    <template if:true={hasData}>
+      <ul class="card-grid">
+        <template for:each={cards} for:item="card">
+          <li key={card.key} class="card">
+            <div class={card.tileClass}>
+              <lightning-icon
+                icon-name={card.iconName}
+                size="small"
+                alternative-text=""
+                class="card-icon"
+              ></lightning-icon>
+            </div>
+            <div class="card-body">
+              <p class="card-label">{card.label}</p>
+              <p class="card-metric">
+                <span class="card-value">{card.value}</span>
+                <template if:true={card.unit}>
+                  <span class="card-unit">{card.unit}</span>
+                </template>
+                <template if:true={card.note}>
+                  <span class="card-note">{card.note}</span>
+                </template>
+                <template if:true={card.hasTrend}>
+                  <span class={card.trendClass}>{card.trendText}</span>
+                  <span class="trend-caption">vs. last season</span>
+                </template>
+              </p>
+            </div>
+          </li>
+        </template>
+      </ul>
+    </template>
+  </section>
+</template>
