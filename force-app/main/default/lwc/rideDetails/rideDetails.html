@@ -1,9 +1,11 @@
 <template>
     <!-- Ongoing Rides Section -->
     <div class="rides-container">
-        <div class="header-section">
-            <h2 class="title">Ongoing Rides</h2>
-            <p class="subtitle">View and explore all ongoing rides</p>
+        <div class="section-header">
+            <div class="header-left">
+                <h2 class="title">Ongoing Rides</h2>
+                <p class="subtitle">View and explore all ongoing rides</p>
+            </div>
         </div>
 
         <template if:true={isOngoingLoading}>
@@ -21,13 +23,47 @@
         <template if:false={isOngoingLoading}>
             <template if:true={hasOngoingRides}>
                 <div class="table-card">
-                    <lightning-datatable
-                        key-field="id"
-                        data={ongoingRides}
-                        columns={columns}
-                        hide-checkbox-column="true"
-                        show-row-number-column="true">
-                    </lightning-datatable>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th class="col-ride">RIDE</th>
+                                <th class="col-group">GROUP</th>
+                                <th class="col-dates">DATES</th>
+                                <th class="col-status">STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={formattedOngoingRides} for:item="ride">
+                                <tr key={ride.id}>
+                                    <td class="col-ride">
+                                        <div class="ride-cell">
+                                            <div class={ride.badgeClass}>
+                                                <span>{ride.badgeIndex}</span>
+                                            </div>
+                                            <div class="ride-info">
+                                                <span class="ride-name">{ride.name}</span>
+                                                <template if:true={ride.description}>
+                                                    <span class="ride-description">{ride.description}</span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="col-group">
+                                        <span class="group-name">{ride.ridingGroupName}</span>
+                                    </td>
+                                    <td class="col-dates">
+                                        <span class="dates-text">{ride.formattedDates}</span>
+                                    </td>
+                                    <td class="col-status">
+                                        <span class={ride.statusPillClass}>
+                                            <span class="status-dot"></span>
+                                            {ride.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
             </template>
 
@@ -42,10 +78,12 @@
     </div>
 
     <!-- Completed Rides Section -->
-    <div class="rides-container slds-m-top_x-large">
-        <div class="header-section">
-            <h2 class="title">Completed Rides</h2>
-            <p class="subtitle">View and explore all completed rides</p>
+    <div class="rides-container section-gap">
+        <div class="section-header">
+            <div class="header-left">
+                <h2 class="title">Completed Rides</h2>
+                <p class="subtitle">View and explore all completed rides</p>
+            </div>
         </div>
 
         <template if:true={isCompletedLoading}>
@@ -63,13 +101,47 @@
         <template if:false={isCompletedLoading}>
             <template if:true={hasCompletedRides}>
                 <div class="table-card">
-                    <lightning-datatable
-                        key-field="id"
-                        data={completedRides}
-                        columns={columns}
-                        hide-checkbox-column="true"
-                        show-row-number-column="true">
-                    </lightning-datatable>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th class="col-ride">RIDE</th>
+                                <th class="col-group">GROUP</th>
+                                <th class="col-dates">DATES</th>
+                                <th class="col-status">STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={formattedCompletedRides} for:item="ride">
+                                <tr key={ride.id}>
+                                    <td class="col-ride">
+                                        <div class="ride-cell">
+                                            <div class={ride.badgeClass}>
+                                                <span>{ride.badgeIndex}</span>
+                                            </div>
+                                            <div class="ride-info">
+                                                <span class="ride-name">{ride.name}</span>
+                                                <template if:true={ride.description}>
+                                                    <span class="ride-description">{ride.description}</span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="col-group">
+                                        <span class="group-name">{ride.ridingGroupName}</span>
+                                    </td>
+                                    <td class="col-dates">
+                                        <span class="dates-text">{ride.formattedDates}</span>
+                                    </td>
+                                    <td class="col-status">
+                                        <span class={ride.statusPillClass}>
+                                            <span class="status-dot"></span>
+                                            {ride.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
             </template>
 
