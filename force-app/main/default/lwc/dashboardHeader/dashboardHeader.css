@@ -86,23 +86,23 @@ nav a:hover{
 
     padding:8px 18px;
 
-    background:#EF4444;
+    background:#FFFFFF;
 
-    color:#FFFFFF;
+    color:#EF4444;
 
     font-size:14px;
 
     font-weight:600;
 
-    border:none;
+    border:2px solid #EF4444;
 
     border-radius:8px;
 
     cursor:pointer;
 
-    transition:background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    transition:background 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
 
-    box-shadow:0 1px 3px rgba(239,68,68,0.3);
+    box-shadow:0 1px 3px rgba(239,68,68,0.15);
 
     letter-spacing:0.01em;
 
@@ -110,9 +110,9 @@ nav a:hover{
 
 .logout-btn:hover{
 
-    background:#DC2626;
+    background:#FEF2F2;
 
-    box-shadow:0 4px 12px rgba(239,68,68,0.4);
+    box-shadow:0 4px 12px rgba(239,68,68,0.25);
 
     transform:translateY(-1px);
 
@@ -120,11 +120,11 @@ nav a:hover{
 
 .logout-btn:active{
 
-    background:#B91C1C;
+    background:#FEE2E2;
 
     transform:translateY(0);
 
-    box-shadow:0 1px 3px rgba(239,68,68,0.3);
+    box-shadow:0 1px 3px rgba(239,68,68,0.15);
 
 }
 
@@ -134,6 +134,6 @@ nav a:hover{
 
     height:16px;
 
-    fill:#FFFFFF;
+    fill:#EF4444;
 
 }
