@@ -66,10 +66,74 @@ nav a{
 
     text-decoration:none;
 
+    font-weight:700;
+
 }
 
 nav a:hover{
 
     color:#111827;
+
+}
+
+.logout-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:8px 18px;
+
+    background:#EF4444;
+
+    color:#FFFFFF;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+
+    box-shadow:0 1px 3px rgba(239,68,68,0.3);
+
+    letter-spacing:0.01em;
+
+}
+
+.logout-btn:hover{
+
+    background:#DC2626;
+
+    box-shadow:0 4px 12px rgba(239,68,68,0.4);
+
+    transform:translateY(-1px);
+
+}
+
+.logout-btn:active{
+
+    background:#B91C1C;
+
+    transform:translateY(0);
+
+    box-shadow:0 1px 3px rgba(239,68,68,0.3);
+
+}
+
+.logout-icon{
+
+    width:16px;
+
+    height:16px;
+
+    fill:#FFFFFF;
 
 }

@@ -28,12 +28,12 @@
 
         </div>
 
-        <lightning-button
-            variant="neutral"
-            label="Logout"
-            icon-name="utility:logout" 
-            onclick={logout}>
-        </lightning-button>
+        <button class="logout-btn" onclick={logout}>
+            <svg class="logout-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M16 13v-2H7V8l-5 4 5 4v-3h9zm-1-11H5C3.9 2 3 2.9 3 4v5h2V4h10v16H5v-5H3v5c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
+            Logout
+        </button>
 
     </div>
 
