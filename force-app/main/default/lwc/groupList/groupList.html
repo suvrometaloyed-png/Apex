@@ -1,171 +1,165 @@
 <template>
+  <section class="groups-container">
+    <!-- Header -->
+    <div class="groups-header">
+      <div>
+        <h1 class="groups-title">Riding Groups</h1>
 
-    <section class="groups-container">
+        <p class="groups-subtitle">
+          Find riders, join a group and ride together.
+        </p>
+      </div>
 
-        <!-- Header -->
-        <div class="groups-header">
+      <div class="group-count">{filteredGroups.length} Groups</div>
+    </div>
 
-            <div>
-                <h1 class="groups-title">
-                    Riding Groups
-                </h1>
+    <!-- Search -->
+    <div class="search-container">
+      <lightning-input
+        type="search"
+        label="Search groups"
+        variant="label-hidden"
+        placeholder="Search by group name or location..."
+        value={searchTerm}
+        onchange={handleSearch}
+      >
+      </lightning-input>
+    </div>
 
-                <p class="groups-subtitle">
-                    Find riders, join a group and ride together.
-                </p>
-            </div>
+    <!-- Loading -->
+    <template if:true={isLoading}>
+      <div class="loading-container">
+        <lightning-spinner alternative-text="Loading groups" size="medium">
+        </lightning-spinner>
+      </div>
+    </template>
 
-            <div class="group-count">
-                {filteredGroups.length} Groups
-            </div>
+    <!-- Error -->
+    <template if:true={errorMessage}>
+      <div class="error-container">
+        <lightning-icon
+          icon-name="utility:error"
+          size="small"
+          alternative-text="Error"
+        >
+        </lightning-icon>
 
+        <span>{errorMessage}</span>
+
+        <button class="retry-button" onclick={handleRetry}>Retry</button>
+      </div>
+    </template>
+
+    <!-- Groups -->
+    <template if:false={isLoading}>
+      <template if:true={hasGroups}>
+        <div class="groups-grid">
+          <template for:each={filteredGroups} for:item="group">
+            <c-group-card
+              key={group.id}
+              group={group}
+              onjoingroup={handleJoinGroup}
+              onleavegroup={handleLeaveGroupFromCard}
+              onviewdetails={handleViewDetails}
+            >
+            </c-group-card>
+          </template>
         </div>
+      </template>
 
+      <!-- No Search Results -->
+      <template if:false={hasGroups}>
+        <div class="empty-state">
+          <lightning-icon
+            icon-name="utility:groups"
+            size="large"
+            alternative-text="No groups"
+          >
+          </lightning-icon>
 
-        <!-- Search -->
-        <div class="search-container">
+          <h2>No groups found</h2>
 
-            <lightning-input
-                type="search"
-                label="Search groups"
-                variant="label-hidden"
-                placeholder="Search by group name or location..."
-                value={searchTerm}
-                onchange={handleSearch}>
-            </lightning-input>
+          <p>Try changing your search criteria.</p>
 
+          <template if:true={searchTerm}>
+            <button class="clear-button" onclick={clearSearch}>
+              Clear Search
+            </button>
+          </template>
         </div>
+      </template>
+    </template>
 
+    <!-- Group Details -->
+    <template lwc:if={selectedGroup}>
+      <c-group-details-modal group={selectedGroup} onclose={handleCloseDetails}>
+      </c-group-details-modal>
+    </template>
 
-        <!-- Loading -->
-        <template if:true={isLoading}>
+    <!-- Join Group Flow Modal -->
+    <template if:true={isFlowOpen}>
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-modal="true"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <lightning-button-icon
+              icon-name="utility:close"
+              alternative-text="Close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+              onclick={closeFlowModal}
+            >
+            </lightning-button-icon>
+            <h2 class="slds-text-heading_medium slds-hyphenate">Join Group</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <lightning-flow
+              flow-api-name={joinGroupFlowName}
+              flow-input-variables={flowInputVariables}
+              onstatuschange={handleFlowStatusChange}
+            >
+            </lightning-flow>
+          </div>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
 
-            <div class="loading-container">
-
-                <lightning-spinner
-                    alternative-text="Loading groups"
-                    size="medium">
-                </lightning-spinner>
-
-            </div>
-
-        </template>
-
-
-        <!-- Error -->
-        <template if:true={errorMessage}>
-
-            <div class="error-container">
-
-                <lightning-icon
-                    icon-name="utility:error"
-                    size="small"
-                    alternative-text="Error">
-                </lightning-icon>
-
-                <span>{errorMessage}</span>
-
-                <button
-                    class="retry-button"
-                    onclick={handleRetry}>
-                    Retry
-                </button>
-
-            </div>
-
-        </template>
-
-
-        <!-- Groups -->
-        <template if:false={isLoading}>
-
-            <template if:true={hasGroups}>
-
-                <div class="groups-grid">
-
-                    <template
-                        for:each={filteredGroups}
-                        for:item="group">
-
-                        <c-group-card
-                            key={group.id}
-                            group={group}
-                            onjoingroup={handleJoinGroup}
-                            onviewdetails={handleViewDetails}>
-                        </c-group-card>
-
-                    </template>
-
-                </div>
-
-            </template>
-
-
-            <!-- No Search Results -->
-            <template if:false={hasGroups}>
-
-                <div class="empty-state">
-
-                    <lightning-icon
-                        icon-name="utility:groups"
-                        size="large"
-                        alternative-text="No groups">
-                    </lightning-icon>
-
-                    <h2>No groups found</h2>
-
-                    <p>
-                        Try changing your search criteria.
-                    </p>
-
-                    <template if:true={searchTerm}>
-                        <button
-                            class="clear-button"
-                            onclick={clearSearch}>
-                            Clear Search
-                        </button>
-                    </template>
-
-                </div>
-
-            </template>
-
-        </template>
-
-        <!-- Group Details -->
-        <template lwc:if={selectedGroup}>
-            <c-group-details-modal
-                group={selectedGroup}
-                onclose={handleCloseDetails}>
-            </c-group-details-modal>
-        </template>
-
-        <!-- Join Group Flow Modal -->
-        <template if:true={isFlowOpen}>
-            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
-                <div class="slds-modal__container">
-                    <header class="slds-modal__header">
-                        <lightning-button-icon
-                            icon-name="utility:close"
-                            alternative-text="Close"
-                            variant="bare-inverse"
-                            class="slds-modal__close"
-                            onclick={closeFlowModal}>
-                        </lightning-button-icon>
-                        <h2 class="slds-text-heading_medium slds-hyphenate">Join Group</h2>
-                    </header>
-                    <div class="slds-modal__content slds-p-around_medium">
-                        <lightning-flow
-                            flow-api-name={joinGroupFlowName}
-                            flow-input-variables={flowInputVariables}
-                            onstatuschange={handleFlowStatusChange}>
-                        </lightning-flow>
-                    </div>
-                </div>
-            </section>
-            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
-        </template>
-
-    </section>
-
+    <!-- Leave Group Flow Modal -->
+    <template if:true={isLeaveFlowOpen}>
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-modal="true"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <lightning-button-icon
+              icon-name="utility:close"
+              alternative-text="Close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+              onclick={closeLeaveFlowModal}
+            >
+            </lightning-button-icon>
+            <h2 class="slds-text-heading_medium slds-hyphenate">Leave Group</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <lightning-flow
+              flow-api-name={leaveGroupFlowName}
+              flow-input-variables={leaveFlowInputVariables}
+              onstatuschange={handleLeaveFlowStatusChange}
+            >
+            </lightning-flow>
+          </div>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+  </section>
 </template>

@@ -1,12 +1,11 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api } from "lwc";
 
 export default class GroupCard extends LightningElement {
+  @api group;
+  isJoining = false;
+  isLeaving = false;
 
-    @api group;
-    isJoining = false;
-
-
-    /*get location() {
+  /*get location() {
         if (!this.group) {
             return '';
         }
@@ -19,71 +18,74 @@ export default class GroupCard extends LightningElement {
         return parts.join(', ');
     }*/
 
+  get membershipStatus() {
+    return this.group?.membershipStatus || "NONE";
+  }
 
-    get membershipStatus() {
-        return this.group?.membershipStatus || 'NONE';
-    }
+  get isMember() {
+    const status = (this.membershipStatus || "").toLowerCase();
+    return status === "active" || status === "approved";
+  }
 
+  get isPending() {
+    const status = (this.membershipStatus || "").toLowerCase();
+    return status === "pending";
+  }
 
-    get isMember() {
-        const status = (this.membershipStatus || '').toLowerCase();
-        return status === 'active' || status === 'approved';
-    }
+  get isOnHold() {
+    const status = (this.membershipStatus || "").toLowerCase();
+    return status === "on hold" || status === "on_hold";
+  }
 
+  get isRejected() {
+    const status = (this.membershipStatus || "").toLowerCase();
+    return status === "rejected";
+  }
 
-    get isPending() {
-        const status = (this.membershipStatus || '').toLowerCase();
-        return status === 'pending';
-    }
+  get canJoin() {
+    const status = (this.membershipStatus || "").toUpperCase();
+    return status === "NONE" || status === "" || status === "REJECTED";
+  }
 
+  handleViewDetails() {
+    this.dispatchEvent(
+      new CustomEvent("viewdetails", {
+        detail: {
+          groupId: this.group.id
+        }
+      })
+    );
+  }
 
-    get isOnHold() {
-        const status = (this.membershipStatus || '').toLowerCase();
-        return status === 'on hold' || status === 'on_hold';
-    }
+  handleJoin() {
+    this.isJoining = true;
+    this.dispatchEvent(
+      new CustomEvent("joingroup", {
+        detail: {
+          groupId: this.group.id
+        }
+      })
+    );
+  }
 
+  handleLeave() {
+    this.isLeaving = true;
+    this.dispatchEvent(
+      new CustomEvent("leavegroup", {
+        detail: {
+          groupId: this.group.id
+        }
+      })
+    );
+  }
 
-    get isRejected() {
-        const status = (this.membershipStatus || '').toLowerCase();
-        return status === 'rejected';
-    }
+  @api
+  joinCompleted() {
+    this.isJoining = false;
+  }
 
-
-    get canJoin() {
-        const status = (this.membershipStatus || '').toUpperCase();
-        return (
-            status === 'NONE' ||
-            status === '' ||
-            status === 'REJECTED'
-        );
-    }
-
-
-    handleViewDetails() {
-        this.dispatchEvent(
-            new CustomEvent('viewdetails', {
-                detail: {
-                    groupId: this.group.id
-                }
-            })
-        );
-    }
-
-
-    handleJoin() {
-        this.isJoining = true;
-        this.dispatchEvent(
-            new CustomEvent('joingroup', {
-                detail: {
-                    groupId: this.group.id
-                }
-            })
-        );
-    }
-
-
-    @api
-    joinCompleted() {
-        this.isJoining = false;
-    }
+  @api
+  leaveCompleted() {
+    this.isLeaving = false;
+  }
 }

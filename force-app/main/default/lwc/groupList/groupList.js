@@ -1,128 +1,107 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire } from "lwc";
 
-import getGroups from '@salesforce/apex/GroupController.getGroups';
+import getGroups from "@salesforce/apex/GroupController.getGroups";
 // import joinGroup from '@salesforce/apex/GroupController.joinGroup';
 
-import { refreshApex } from '@salesforce/apex';
+import { refreshApex } from "@salesforce/apex";
 
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import userId from '@salesforce/user/Id';
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import userId from "@salesforce/user/Id";
 
 export default class GroupList extends LightningElement {
-    currentUserId = userId;
-    groups = [];
+  currentUserId = userId;
+  groups = [];
 
-    searchTerm = '';
+  searchTerm = "";
 
-    isLoading = true;
+  isLoading = true;
 
-    errorMessage;
+  errorMessage;
 
-    selectedGroupId;
+  selectedGroupId;
 
-    wiredGroupsResult;
+  wiredGroupsResult;
 
-    // Flow modal state for Join Group
-    isFlowOpen = false;
-    joinGroupFlowName = 'Join_Group'; // Placeholder Flow name
-    flowInputVariables = [];
+  // Flow modal state for Join Group
+  isFlowOpen = false;
+  joinGroupFlowName = "Join_Group"; // Placeholder Flow name
+  flowInputVariables = [];
 
+  // Flow modal state for Leave Group
+  isLeaveFlowOpen = false;
+  leaveGroupFlowName = "Leave_Group";
+  leaveFlowInputVariables = [];
 
-    // ---------------------------------------------------------
-    // LOAD GROUPS
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  // LOAD GROUPS
+  // ---------------------------------------------------------
 
-    @wire(getGroups)
-    wiredGroups(result) {
+  @wire(getGroups)
+  wiredGroups(result) {
+    this.wiredGroupsResult = result;
 
-        this.wiredGroupsResult = result;
+    const { data, error } = result;
 
-        const { data, error } = result;
+    this.isLoading = false;
 
-        this.isLoading = false;
+    if (data) {
+      this.groups = data;
 
-        if (data) {
+      this.errorMessage = undefined;
+    } else if (error) {
+      this.groups = [];
 
-            this.groups = data;
+      this.errorMessage = this.reduceError(error);
+    }
+  }
 
-            this.errorMessage = undefined;
+  // ---------------------------------------------------------
+  // FILTERED GROUPS
+  // ---------------------------------------------------------
 
-        } else if (error) {
-
-            this.groups = [];
-
-            this.errorMessage =
-                this.reduceError(error);
-        }
+  get filteredGroups() {
+    if (!this.searchTerm) {
+      return this.groups;
     }
 
+    const search = this.searchTerm.toLowerCase();
 
-    // ---------------------------------------------------------
-    // FILTERED GROUPS
-    // ---------------------------------------------------------
+    return this.groups.filter((group) => {
+      const name = group.name?.toLowerCase() || "";
 
-    get filteredGroups() {
+      return name.includes(search);
+    });
+  }
 
-        if (!this.searchTerm) {
-            return this.groups;
-        }
+  get hasGroups() {
+    return this.filteredGroups.length > 0;
+  }
 
-        const search =
-            this.searchTerm.toLowerCase();
+  // ---------------------------------------------------------
+  // SEARCH
+  // ---------------------------------------------------------
 
-        return this.groups.filter(group => {
+  handleSearch(event) {
+    this.searchTerm = event.target.value?.trim() || "";
+  }
 
-            const name =
-                group.name?.toLowerCase() || '';
+  clearSearch() {
+    this.searchTerm = "";
+  }
 
+  // ---------------------------------------------------------
+  // JOIN GROUP
+  // ---------------------------------------------------------
 
+  async handleJoinGroup(event) {
+    const groupId = event.detail.groupId;
 
-            return (
-                name.includes(search)
-                
-            );
-        });
+    if (!groupId) {
+      return;
     }
 
-
-    get hasGroups() {
-
-        return this.filteredGroups.length > 0;
-    }
-
-
-    // ---------------------------------------------------------
-    // SEARCH
-    // ---------------------------------------------------------
-
-    handleSearch(event) {
-
-        this.searchTerm =
-            event.target.value?.trim() || '';
-    }
-
-
-    clearSearch() {
-
-        this.searchTerm = '';
-    }
-
-
-    // ---------------------------------------------------------
-    // JOIN GROUP
-    // ---------------------------------------------------------
-
-    async handleJoinGroup(event) {
-
-        const groupId =
-            event.detail.groupId;
-
-        if (!groupId) {
-            return;
-        }
-
-        // --- Commented out direct Apex joinGroup call to use Flow instead ---
-        /*
+    // --- Commented out direct Apex joinGroup call to use Flow instead ---
+    /*
         try {
 
             await joinGroup({
@@ -150,159 +129,180 @@ export default class GroupList extends LightningElement {
         }
         */
 
-        // Launch Join Group Flow modal
-        this.flowInputVariables = [
-            {
-                name: 'varGroupId',
-                type: 'String',
-                value: groupId
-            },
-            {
-                name: 'LoggedInUserId',
-                type: 'String',
-                value: this.currentUserId
-            }
-        ];
-        this.isFlowOpen = true;
-    }
+    // Launch Join Group Flow modal
+    this.flowInputVariables = [
+      {
+        name: "varGroupId",
+        type: "String",
+        value: groupId
+      },
+      {
+        name: "LoggedInUserId",
+        type: "String",
+        value: this.currentUserId
+      }
+    ];
+    this.isFlowOpen = true;
+  }
 
-    closeFlowModal() {
-        this.isFlowOpen = false;
-        this.resetJoinButtons();
-    }
+  closeFlowModal() {
+    this.isFlowOpen = false;
+    this.resetJoinButtons();
+  }
 
-    resetJoinButtons() {
-        const cards = this.template.querySelectorAll('c-group-card');
-        if (cards) {
-            cards.forEach((card) => {
-                if (typeof card.joinCompleted === 'function') {
-                    card.joinCompleted();
-                }
-            });
+  resetJoinButtons() {
+    const cards = this.template.querySelectorAll("c-group-card");
+    if (cards) {
+      cards.forEach((card) => {
+        if (typeof card.joinCompleted === "function") {
+          card.joinCompleted();
         }
+      });
+    }
+  }
+
+  async handleFlowStatusChange(event) {
+    const status = event.detail.status;
+    if (status === "FINISHED" || status === "FINISHED_SCREEN") {
+      this.closeFlowModal();
+      if (this.wiredGroupsResult) {
+        await refreshApex(this.wiredGroupsResult);
+      }
+    } else if (status === "ERROR") {
+      this.closeFlowModal();
+    }
+  }
+
+  // ---------------------------------------------------------
+  // LEAVE GROUP FROM CARD
+  // ---------------------------------------------------------
+
+  handleLeaveGroupFromCard(event) {
+    const groupId = event.detail.groupId;
+    if (!groupId) {
+      return;
     }
 
-    async handleFlowStatusChange(event) {
-        const status = event.detail.status;
-        if (status === 'FINISHED' || status === 'FINISHED_SCREEN') {
-            this.closeFlowModal();
-            if (this.wiredGroupsResult) {
-                await refreshApex(this.wiredGroupsResult);
-            }
-        } else if (status === 'ERROR') {
-            this.closeFlowModal();
+    this.leaveFlowInputVariables = [
+      {
+        name: "varGroupId",
+        type: "String",
+        value: groupId
+      },
+      {
+        name: "loggedInUserDetails",
+        type: "String",
+        value: this.currentUserId
+      }
+    ];
+    this.isLeaveFlowOpen = true;
+  }
+
+  closeLeaveFlowModal() {
+    this.isLeaveFlowOpen = false;
+    this.resetLeaveButtons();
+  }
+
+  resetLeaveButtons() {
+    const cards = this.template.querySelectorAll("c-group-card");
+    if (cards) {
+      cards.forEach((card) => {
+        if (typeof card.leaveCompleted === "function") {
+          card.leaveCompleted();
         }
+      });
+    }
+  }
+
+  async handleLeaveFlowStatusChange(event) {
+    const status = event.detail.status;
+    if (status === "FINISHED" || status === "FINISHED_SCREEN") {
+      this.closeLeaveFlowModal();
+      if (this.wiredGroupsResult) {
+        await refreshApex(this.wiredGroupsResult);
+      }
+    } else if (status === "ERROR") {
+      this.closeLeaveFlowModal();
+    }
+  }
+
+  // ---------------------------------------------------------
+  // VIEW DETAILS
+  // ---------------------------------------------------------
+
+  handleViewDetails(event) {
+    this.selectedGroupId = event.detail.groupId;
+  }
+
+  handleCloseDetails() {
+    this.selectedGroupId = undefined;
+  }
+
+  /*
+   * Derived from the loaded list so the modal stays in sync
+   * after refreshApex (e.g. status changes).
+   */
+  get selectedGroup() {
+    if (!this.selectedGroupId) {
+      return undefined;
     }
 
+    return this.groups.find((group) => group.id === this.selectedGroupId);
+  }
 
-    // ---------------------------------------------------------
-    // VIEW DETAILS
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  // RETRY
+  // ---------------------------------------------------------
 
-    handleViewDetails(event) {
+  async handleRetry() {
+    this.isLoading = true;
 
-        this.selectedGroupId =
-            event.detail.groupId;
+    this.errorMessage = undefined;
+
+    try {
+      await refreshApex(this.wiredGroupsResult);
+    } catch (error) {
+      this.errorMessage = this.reduceError(error);
+    } finally {
+      this.isLoading = false;
     }
+  }
 
+  // ---------------------------------------------------------
+  // TOAST
+  // ---------------------------------------------------------
 
-    handleCloseDetails() {
-
-        this.selectedGroupId = undefined;
-    }
-
-
-    /*
-     * Derived from the loaded list so the modal stays in sync
-     * after refreshApex (e.g. status changes).
-     */
-    get selectedGroup() {
-
-        if (!this.selectedGroupId) {
-            return undefined;
-        }
-
-        return this.groups.find(
-            group => group.id === this.selectedGroupId
-        );
-    }
-
-
-    // ---------------------------------------------------------
-    // RETRY
-    // ---------------------------------------------------------
-
-    async handleRetry() {
-
-        this.isLoading = true;
-
-        this.errorMessage = undefined;
-
-        try {
-
-            await refreshApex(
-                this.wiredGroupsResult
-            );
-
-        } catch (error) {
-
-            this.errorMessage =
-                this.reduceError(error);
-
-        } finally {
-
-            this.isLoading = false;
-        }
-    }
-
-
-    // ---------------------------------------------------------
-    // TOAST
-    // ---------------------------------------------------------
-
-    showToast(
+  showToast(title, message, variant) {
+    this.dispatchEvent(
+      new ShowToastEvent({
         title,
         message,
         variant
-    ) {
+      })
+    );
+  }
 
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title,
-                message,
-                variant
-            })
-        );
+  // ---------------------------------------------------------
+  // ERROR HANDLING
+  // ---------------------------------------------------------
+
+  reduceError(error) {
+    if (!error) {
+      return "An unexpected error occurred.";
     }
 
-
-    // ---------------------------------------------------------
-    // ERROR HANDLING
-    // ---------------------------------------------------------
-
-    reduceError(error) {
-
-        if (!error) {
-            return 'An unexpected error occurred.';
-        }
-
-        if (Array.isArray(error.body)) {
-
-            return error.body
-                .map(item => item.message)
-                .join(', ');
-        }
-
-        if (typeof error.body?.message === 'string') {
-
-            return error.body.message;
-        }
-
-        if (typeof error.message === 'string') {
-
-            return error.message;
-        }
-
-        return 'An unexpected error occurred.';
+    if (Array.isArray(error.body)) {
+      return error.body.map((item) => item.message).join(", ");
     }
+
+    if (typeof error.body?.message === "string") {
+      return error.body.message;
+    }
+
+    if (typeof error.message === "string") {
+      return error.message;
+    }
+
+    return "An unexpected error occurred.";
+  }
 }
